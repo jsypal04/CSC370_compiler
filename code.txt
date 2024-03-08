@@ -1,0 +1,15 @@
+func foo(int x) {
+    return x - 1
+}
+
+int x = 3
+x + 1
+
+
+int y
+if !(x > 0) {
+    x = foo(x)
+}
+else {
+    y = foo(x)
+}
