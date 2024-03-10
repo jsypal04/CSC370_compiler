@@ -102,4 +102,16 @@ public:
     }
 };
 
+// class to represent literals 
+class LiteralStmtAST : StmtAST {
+private:
+    Token type;
+    std::string value;
+public:
+    LiteralStmtAST(Token data_type, std::string val) {
+        type = data_type;
+        value = val;
+    }
+};
+
 #endif
