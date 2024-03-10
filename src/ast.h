@@ -90,6 +90,16 @@ public:
     }
 };
 
-
+// class to represent identifiers and keywords
+class IDStmtAST : StmtAST {
+private:
+    Token token;
+    std::string lexeme;
+public:
+    IDStmtAST(Token tok, std::string lex) {
+        token = tok;
+        lexeme = lex;
+    }
+};
 
 #endif
