@@ -27,9 +27,11 @@ public:
         delete lexer;
     }
 
-    // These functions have not yet been implemented
-    void parse();
+    void parse() {
+        prog();
+    }
 
+    // These functions have not yet been implemented
     void prog();
 
     void stmt();
