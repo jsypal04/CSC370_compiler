@@ -9,7 +9,7 @@
 class Lexer {
 public:
     char nextChar; // a variable to store each char read from the source code
-    Token nextToken; // a variable to store the token of a given lexeme
+    int nextToken; // a variable to store the token of a given lexeme
     std::string lexeme; // a variable to store a lexeme
     FILE *file; // a variabel to point to a file stream
     char opSymbols[10] = {'+', '=', '-', '*', '/', '%', '<', '>', '&', '|'};
