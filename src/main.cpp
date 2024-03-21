@@ -1,15 +1,12 @@
 #include <iostream>
-#include "lexer.h"
+#include "headers/parser.h"
 using namespace std;
 
 int main() {
 
-    Lexer lexer;
-    lexer.nextChar = getc(lexer.file);
-    do {
-        lexer.lex();
-        cout << "Token: " << lexer.nextToken << ", Lexeme: " << lexer.lexeme << '\n';
-    } while (lexer.nextChar != EOF);
+    Parser parser;
+
+    parser.destroyLexer();
 
     return 0;
 }

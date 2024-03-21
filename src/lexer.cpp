@@ -1,6 +1,6 @@
 #include <iostream>
 #include <ctype.h>
-#include "lexer.h"
+#include "headers/lexer.h"
 using namespace std;
 
 bool Lexer::isOpSymbol(char symbol) {
