@@ -15,7 +15,6 @@ void Parser::prog() {
 
 void Parser::stmt() {
     lexer->lex();
-    cout << "Character: " << lexer->nextChar << '\n';
     if (lexer->nextToken == INT_KWD || lexer->nextToken == FLOAT_KWD) {
         cout << "Parsing declaration..." << '\n';
         declaration();
@@ -32,7 +31,7 @@ void Parser::stmt() {
 }
 
 void Parser::declaration() {
-    int tok = lexer->nextToken;
+    Token tok = lexer->nextToken;
     lexer->lex();
     if (lexer->nextToken != ID) {
         cout << "ERROR - invalid declaration." << '\n';
@@ -108,7 +107,7 @@ void Parser::term_p() {
 
 void Parser::factor() {
     if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
-        int tok = lexer->nextToken;
+        Token tok = lexer->nextToken;
         // will probably have to do some stuff with the ast classes here
     }
     else if (lexer->nextToken == LPAREN) {

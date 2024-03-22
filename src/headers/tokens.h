@@ -12,15 +12,9 @@ enum Token {
     INT_KWD,
     FLOAT_KWD,
     NEWLINE,
-    END
-};
-
-enum Literal {
+    END,
     INT_LIT=100,
-    FLOAT_LIT
-};
-
-enum Operator {
+    FLOAT_LIT,
     ADD_OP=200,
     SUB_OP,
     MULT_OP,
@@ -36,10 +30,7 @@ enum Operator {
     AND,
     OR,
     NOT,
-    INVALID_OP
-};
-
-enum Control {
+    INVALID_OP,
     LPAREN=300,
     RPAREN,
     LBRACE,

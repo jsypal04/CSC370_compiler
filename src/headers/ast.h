@@ -40,11 +40,11 @@ public:
 // class for the expr_p production rule
 class Expr_PStmtAST : StmtAST {
 private:
-    Operator op;
+    Token op;
     std::unique_ptr<StmtAST> term;
     std::unique_ptr<StmtAST> expr_p;
 public:
-    Expr_PStmtAST(Operator o, std::unique_ptr<StmtAST> trm, std::unique_ptr<StmtAST> exp) {
+    Expr_PStmtAST(Token o, std::unique_ptr<StmtAST> trm, std::unique_ptr<StmtAST> exp) {
         op = o;
         term = std::move(trm);
         expr_p = std::move(exp);
@@ -64,11 +64,11 @@ public:
 
 class Term_PStmtAST : StmtAST {
 private:
-    Operator op;
+    Token op;
     std::unique_ptr<StmtAST> factor;
     std::unique_ptr<StmtAST> term_p;
 public:
-    Term_PStmtAST(Operator o, std::unique_ptr<StmtAST> fctr, std::unique_ptr<StmtAST> trm_p) {
+    Term_PStmtAST(Token o, std::unique_ptr<StmtAST> fctr, std::unique_ptr<StmtAST> trm_p) {
         op = o;
         factor = std::move(fctr);
         term_p = std::move(trm_p);

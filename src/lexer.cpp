@@ -55,7 +55,7 @@ Token Lexer::lookupToken(string lexeme) {
     }
 }
 
-Operator Lexer::lookupOneChar(string op) {
+Token Lexer::lookupOneChar(string op) {
     char opc;
     if (op.size() != 1) {
         cout << "ERROR - something went wrong with the operator\n";
@@ -90,7 +90,7 @@ Operator Lexer::lookupOneChar(string op) {
     }
 }
 
-Operator Lexer::lookupTwoChar(string op) {
+Token Lexer::lookupTwoChar(string op) {
     if (op.size() != 2) {
         cout << "ERROR - something went wrong with the operator\n";
         return INVALID_OP;
@@ -113,7 +113,7 @@ Operator Lexer::lookupTwoChar(string op) {
     }
 }
 
-Control Lexer::lookupBracket(char bracket) {
+Token Lexer::lookupBracket(char bracket) {
     switch (bracket)
     {
     case '(':
