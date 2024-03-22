@@ -15,11 +15,11 @@ public:
         lexer = new Lexer();
 
         // TEST CODE
-        lexer->nextChar = getc(lexer->file);
-        do {
-            lexer->lex();
-            std::cout << "Token: " << lexer->nextToken << ", Lexeme: " << lexer->lexeme << '\n';
-        } while (lexer->nextChar != EOF);
+        // lexer->nextChar = getc(lexer->file);
+        // do {
+        //     lexer->lex();
+        //     std::cout << "Token: " << lexer->nextToken << ", Lexeme: " << lexer->lexeme << '\n';
+        // } while (lexer->nextChar != EOF);
     }
 
     // A method to delete the data in the lexer reference once the parser is finished
@@ -28,7 +28,9 @@ public:
     }
 
     void parse() {
+        std::cout << "Parsing prog..." << '\n';
         prog();
+        std::cout << "Prog parsed." << '\n';
     }
 
     // These functions have not yet been implemented
