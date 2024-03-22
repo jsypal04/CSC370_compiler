@@ -11,6 +11,27 @@ public:
     virtual ~StmtAST() = default;
 };
 
+// class for prog
+class ProgStmtAST : StmtAST {
+public:
+    std::unique_ptr<StmtAST> stmt;
+    std::unique_ptr<StmtAST> prog;
+
+    ProgStmtAST(std::unique_ptr<StmtAST> first_stmt, std::unique_ptr<StmtAST> program) {
+        stmt = std::move(first_stmt);
+        prog = std::move(program);
+    }
+};
+
+// class for Stmts
+class LineStmtAST : StmtAST {
+    std::unique_ptr<StmtAST> line;
+
+    LineStmtAST(std::unique_ptr<StmtAST> line_ptr) {
+        line = std::move(line_ptr);
+    }
+};
+
 // class for declaration nodes
 class DeclarationStmtAST : StmtAST {
 public:

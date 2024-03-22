@@ -1,4 +1,5 @@
 #include "headers/parser.h"
+#include "headers/ast.h"
 using namespace std;
 
 void Parser::prog() {
