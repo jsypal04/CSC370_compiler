@@ -1,2 +1,3 @@
 int helloWorld
-helloWorld = 12.5 * (9 - 3)
+helloWorld = 12.5 * (9 - 3) + 4 * 3.4563737363 - 1
+helloWorld = (x + 2) * ((x - 4) * 5)
