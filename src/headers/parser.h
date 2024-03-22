@@ -29,6 +29,7 @@ public:
 
     void parse() {
         lexer->nextChar = getc(lexer->file);
+        lexer->lex();
         std::cout << "Parsing prog..." << '\n';
         prog();
         std::cout << "Prog parsed." << '\n';

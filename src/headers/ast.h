@@ -11,15 +11,27 @@ public:
     virtual ~StmtAST() = default;
 };
 
+// class for declaration nodes
+class DeclarationStmtAST : StmtAST {
+public:
+    std::unique_ptr<StmtAST> type;
+    std::unique_ptr<StmtAST> variable;
+    
+    DeclarationStmtAST(std::unique_ptr<StmtAST> data_type, std::unique_ptr<StmtAST> varName) {
+        type = std::move(data_type);
+        variable = std::move(varName);
+    }
+};
+
 // class for assignment nodes
 class AssignStmtAST : StmtAST {
 private:
-    std::string varName;
+    std::unique_ptr<StmtAST> varID;
     Token type;
     std::unique_ptr<StmtAST> RHS;
 public:
-    AssignStmtAST(std::string name, Token typ, std::unique_ptr<StmtAST> rhs) {
-        varName = name;
+    AssignStmtAST(std::unique_ptr<StmtAST> name, Token typ, std::unique_ptr<StmtAST> rhs) {
+        varID = std::move(name);
         type = typ;
         RHS = std::move(rhs); // no idea why we need to use std::move() but it doesn't work otherwise
     }
