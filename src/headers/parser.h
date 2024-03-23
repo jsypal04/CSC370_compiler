@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "lexer.h"
+#include "ast.h"
 
 // A class to implement a recursive descent parser for the languages grammar
 class Parser {
@@ -27,32 +28,33 @@ public:
         delete lexer;
     }
 
-    void parse() {
+    std::unique_ptr<ProgStmtAST> parse() {
         lexer->nextChar = getc(lexer->file);
         lexer->lex();
         std::cout << "Parsing prog..." << '\n';
-        prog();
+        std::unique_ptr<ProgStmtAST> program = std::move(prog());
         std::cout << "Prog parsed." << '\n';
+
+        return program;
     }
 
-    // These functions have not yet been implemented
-    void prog();
+    std::unique_ptr<ProgStmtAST> prog();
 
-    void stmt();
+    std::unique_ptr<LineStmtAST> stmt();
 
-    void declaration();
+    std::unique_ptr<DeclarationStmtAST> declaration();
 
-    void assign();
+    std::unique_ptr<AssignStmtAST> assign();
 
-    void expr();
+    std::unique_ptr<ExprStmtAST> expr();
 
-    void expr_p();
+    std::unique_ptr<Expr_PStmtAST> expr_p();
 
-    void term();
+    std::unique_ptr<TermStmtAST> term();
 
-    void term_p();
+    std::unique_ptr<Term_PStmtAST> term_p();
 
-    void factor();
+    std::unique_ptr<FactorStmtAST> factor();
 };
 
 #endif

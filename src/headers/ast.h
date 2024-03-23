@@ -25,10 +25,13 @@ public:
 
 // class for Stmts
 class LineStmtAST : StmtAST {
-    std::unique_ptr<StmtAST> line;
+public:
+    std::unique_ptr<StmtAST> declaration;
+    std::unique_ptr<StmtAST> assign;
 
-    LineStmtAST(std::unique_ptr<StmtAST> line_ptr) {
-        line = std::move(line_ptr);
+    LineStmtAST(std::unique_ptr<StmtAST> decl_ptr, std::unique_ptr<StmtAST> assign_ptr) {
+        declaration = std::move(decl_ptr);
+        assign = std::move(assign_ptr);
     }
 };
 
@@ -46,24 +49,22 @@ public:
 
 // class for assignment nodes
 class AssignStmtAST : StmtAST {
-private:
-    std::unique_ptr<StmtAST> varID;
-    Token type;
-    std::unique_ptr<StmtAST> RHS;
 public:
-    AssignStmtAST(std::unique_ptr<StmtAST> name, Token typ, std::unique_ptr<StmtAST> rhs) {
+    std::unique_ptr<StmtAST> varID;
+    std::unique_ptr<StmtAST> RHS;
+
+    AssignStmtAST(std::unique_ptr<StmtAST> name, std::unique_ptr<StmtAST> rhs) {
         varID = std::move(name);
-        type = typ;
-        RHS = std::move(rhs); // no idea why we need to use std::move() but it doesn't work otherwise
+        RHS = std::move(rhs);
     }
 };
 
 // class for arithmetic expression nodes
 class ExprStmtAST : StmtAST {
-private:
+public:
     std::unique_ptr<StmtAST> term;
     std::unique_ptr<StmtAST> expr_p;
-public:
+
     ExprStmtAST(std::unique_ptr<StmtAST> trm, std::unique_ptr<StmtAST> exp) {
         term = std::move(trm);
         expr_p = std::move(exp);
@@ -72,11 +73,11 @@ public:
 
 // class for the expr_p production rule
 class Expr_PStmtAST : StmtAST {
-private:
+public:
     Token op;
     std::unique_ptr<StmtAST> term;
     std::unique_ptr<StmtAST> expr_p;
-public:
+
     Expr_PStmtAST(Token o, std::unique_ptr<StmtAST> trm, std::unique_ptr<StmtAST> exp) {
         op = o;
         term = std::move(trm);
@@ -85,10 +86,10 @@ public:
 };
 
 class TermStmtAST : StmtAST {
-private:
+public:
     std::unique_ptr<StmtAST> factor;
     std::unique_ptr<StmtAST> term_p;
-public:
+
     TermStmtAST(std::unique_ptr<StmtAST> fctr, std::unique_ptr<StmtAST> trm_p) {
         factor = std::move(fctr);
         term_p = std::move(trm_p);
@@ -96,11 +97,11 @@ public:
 };
 
 class Term_PStmtAST : StmtAST {
-private:
+public:
     Token op;
     std::unique_ptr<StmtAST> factor;
     std::unique_ptr<StmtAST> term_p;
-public:
+
     Term_PStmtAST(Token o, std::unique_ptr<StmtAST> fctr, std::unique_ptr<StmtAST> trm_p) {
         op = o;
         factor = std::move(fctr);
@@ -109,41 +110,25 @@ public:
 };
 
 class FactorStmtAST : StmtAST {
-private:
-    // might change how lparen and rparen are implemented
-    bool lparen;
-    std::unique_ptr<StmtAST> object;
-    bool rparen;
 public:
+    // might change how lparen and rparen are implemented
+    std::unique_ptr<StmtAST> object;
+
     // only input tokens for lparen and rparen if obj is an ExprStmtAST, othermise input null
-    FactorStmtAST(bool lp, bool rp, std::unique_ptr<StmtAST> obj) {
-        lparen = lp;
-        rparen = rp;
+    FactorStmtAST(std::unique_ptr<StmtAST> obj) {
         object = std::move(obj);
     }
 };
 
 // class to represent identifiers and keywords
 class IDStmtAST : StmtAST {
-private:
+public:
     Token token;
     std::string lexeme;
-public:
+
     IDStmtAST(Token tok, std::string lex) {
         token = tok;
         lexeme = lex;
-    }
-};
-
-// class to represent literals 
-class LiteralStmtAST : StmtAST {
-private:
-    Token type;
-    std::string value;
-public:
-    LiteralStmtAST(Token data_type, std::string val) {
-        type = data_type;
-        value = val;
     }
 };
 
