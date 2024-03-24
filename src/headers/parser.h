@@ -12,8 +12,8 @@ public:
     Lexer* lexer;
 
     // Parser Constructor. Currently it only creates a new Lexer refernce
-    Parser() {
-        lexer = new Lexer();
+    Parser(char* path) {
+        lexer = new Lexer(path);
 
         // TEST CODE
         // lexer->nextChar = getc(lexer->file);

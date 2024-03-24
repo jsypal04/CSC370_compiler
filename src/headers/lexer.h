@@ -14,8 +14,8 @@ public:
     FILE *file; // a variabel to point to a file stream
     char opSymbols[10] = {'+', '=', '-', '*', '/', '%', '<', '>', '&', '|'};
 
-    Lexer() {
-        file = fopen("code.txt", "r");
+    Lexer(char* path) {
+        file = fopen(path, "r");
     }
 
     // A method to check if a char is a operator symbol
