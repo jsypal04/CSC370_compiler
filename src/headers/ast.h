@@ -5,6 +5,19 @@
 #include <memory>
 #include "tokens.h"
 
+// class declarations
+class StmtAST;
+class ProgStmtAST;
+class LineStmtAST;
+class DeclarationStmtAST;
+class AssignStmtAST;
+class ExprStmtAST;
+class Expr_PStmtAST;
+class TermStmtAST;
+class Term_PStmtAST;
+class FactorStmtAST;
+class IDStmtAST;
+
 // base class for all statements
 class StmtAST {
 public:
@@ -14,10 +27,10 @@ public:
 // class for prog
 class ProgStmtAST : StmtAST {
 public:
-    std::unique_ptr<StmtAST> stmt;
-    std::unique_ptr<StmtAST> prog;
+    std::unique_ptr<LineStmtAST> stmt;
+    std::unique_ptr<ProgStmtAST> prog;
 
-    ProgStmtAST(std::unique_ptr<StmtAST> first_stmt, std::unique_ptr<StmtAST> program) {
+    ProgStmtAST(std::unique_ptr<LineStmtAST> first_stmt, std::unique_ptr<ProgStmtAST> program) {
         stmt = std::move(first_stmt);
         prog = std::move(program);
     }
@@ -26,10 +39,10 @@ public:
 // class for Stmts
 class LineStmtAST : StmtAST {
 public:
-    std::unique_ptr<StmtAST> declaration;
-    std::unique_ptr<StmtAST> assign;
+    std::unique_ptr<DeclarationStmtAST> declaration;
+    std::unique_ptr<AssignStmtAST> assign;
 
-    LineStmtAST(std::unique_ptr<StmtAST> decl_ptr, std::unique_ptr<StmtAST> assign_ptr) {
+    LineStmtAST(std::unique_ptr<DeclarationStmtAST> decl_ptr, std::unique_ptr<AssignStmtAST> assign_ptr) {
         declaration = std::move(decl_ptr);
         assign = std::move(assign_ptr);
     }
@@ -38,10 +51,10 @@ public:
 // class for declaration nodes
 class DeclarationStmtAST : StmtAST {
 public:
-    std::unique_ptr<StmtAST> type;
-    std::unique_ptr<StmtAST> variable;
+    std::unique_ptr<IDStmtAST> type;
+    std::unique_ptr<IDStmtAST> variable;
     
-    DeclarationStmtAST(std::unique_ptr<StmtAST> data_type, std::unique_ptr<StmtAST> varName) {
+    DeclarationStmtAST(std::unique_ptr<IDStmtAST> data_type, std::unique_ptr<IDStmtAST> varName) {
         type = std::move(data_type);
         variable = std::move(varName);
     }
@@ -50,10 +63,10 @@ public:
 // class for assignment nodes
 class AssignStmtAST : StmtAST {
 public:
-    std::unique_ptr<StmtAST> varID;
-    std::unique_ptr<StmtAST> RHS;
+    std::unique_ptr<IDStmtAST> varID;
+    std::unique_ptr<ExprStmtAST> RHS;
 
-    AssignStmtAST(std::unique_ptr<StmtAST> name, std::unique_ptr<StmtAST> rhs) {
+    AssignStmtAST(std::unique_ptr<IDStmtAST> name, std::unique_ptr<ExprStmtAST> rhs) {
         varID = std::move(name);
         RHS = std::move(rhs);
     }
@@ -62,10 +75,10 @@ public:
 // class for arithmetic expression nodes
 class ExprStmtAST : StmtAST {
 public:
-    std::unique_ptr<StmtAST> term;
-    std::unique_ptr<StmtAST> expr_p;
+    std::unique_ptr<TermStmtAST> term;
+    std::unique_ptr<Expr_PStmtAST> expr_p;
 
-    ExprStmtAST(std::unique_ptr<StmtAST> trm, std::unique_ptr<StmtAST> exp) {
+    ExprStmtAST(std::unique_ptr<TermStmtAST> trm, std::unique_ptr<Expr_PStmtAST> exp) {
         term = std::move(trm);
         expr_p = std::move(exp);
     }
@@ -75,10 +88,10 @@ public:
 class Expr_PStmtAST : StmtAST {
 public:
     Token op;
-    std::unique_ptr<StmtAST> term;
-    std::unique_ptr<StmtAST> expr_p;
+    std::unique_ptr<TermStmtAST> term;
+    std::unique_ptr<Expr_PStmtAST> expr_p;
 
-    Expr_PStmtAST(Token o, std::unique_ptr<StmtAST> trm, std::unique_ptr<StmtAST> exp) {
+    Expr_PStmtAST(Token o, std::unique_ptr<TermStmtAST> trm, std::unique_ptr<Expr_PStmtAST> exp) {
         op = o;
         term = std::move(trm);
         expr_p = std::move(exp);
@@ -87,10 +100,10 @@ public:
 
 class TermStmtAST : StmtAST {
 public:
-    std::unique_ptr<StmtAST> factor;
-    std::unique_ptr<StmtAST> term_p;
+    std::unique_ptr<FactorStmtAST> factor;
+    std::unique_ptr<Term_PStmtAST> term_p;
 
-    TermStmtAST(std::unique_ptr<StmtAST> fctr, std::unique_ptr<StmtAST> trm_p) {
+    TermStmtAST(std::unique_ptr<FactorStmtAST> fctr, std::unique_ptr<Term_PStmtAST> trm_p) {
         factor = std::move(fctr);
         term_p = std::move(trm_p);
     }
@@ -99,10 +112,10 @@ public:
 class Term_PStmtAST : StmtAST {
 public:
     Token op;
-    std::unique_ptr<StmtAST> factor;
-    std::unique_ptr<StmtAST> term_p;
+    std::unique_ptr<FactorStmtAST> factor;
+    std::unique_ptr<Term_PStmtAST> term_p;
 
-    Term_PStmtAST(Token o, std::unique_ptr<StmtAST> fctr, std::unique_ptr<StmtAST> trm_p) {
+    Term_PStmtAST(Token o, std::unique_ptr<FactorStmtAST> fctr, std::unique_ptr<Term_PStmtAST> trm_p) {
         op = o;
         factor = std::move(fctr);
         term_p = std::move(trm_p);
@@ -111,12 +124,13 @@ public:
 
 class FactorStmtAST : StmtAST {
 public:
-    // might change how lparen and rparen are implemented
-    std::unique_ptr<StmtAST> object;
+    std::unique_ptr<IDStmtAST> object;
+    std::unique_ptr<ExprStmtAST> expr_object;
 
-    // only input tokens for lparen and rparen if obj is an ExprStmtAST, othermise input null
-    FactorStmtAST(std::unique_ptr<StmtAST> obj) {
+    // Enter (nullptr, ExprStmtAST) if the factor is an expression and (IDStmtAST, nullptr) if the factor is a variable/literal
+    FactorStmtAST(std::unique_ptr<IDStmtAST> obj, std::unique_ptr<ExprStmtAST> expr_obj) {
         object = std::move(obj);
+        expr_object = std::move(expr_obj);
     }
 };
 

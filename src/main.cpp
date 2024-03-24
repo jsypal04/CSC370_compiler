@@ -1,12 +1,15 @@
 #include <iostream>
+#include <typeinfo>
 #include "headers/parser.h"
-using namespace std;
+
+void traverse_prog(std::unique_ptr<ProgStmtAST> program);
 
 int main() {
 
     Parser parser;
 
-    parser.parse();
+    std::unique_ptr<ProgStmtAST> program = std::move(parser.parse());
+    std::cout << "\n\n\n\n" << typeid(*program).name() << '\n';
 
     parser.destroyLexer();
 

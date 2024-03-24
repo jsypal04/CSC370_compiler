@@ -11,7 +11,7 @@ std::unique_ptr<ProgStmtAST> Parser::prog() {
         std::unique_ptr<ProgStmtAST> next_prog = std::move(prog());
         std::cout << "Prog parsed." << '\n';
 
-        auto program = std::make_unique<ProgStmtAST>(statement, next_prog);
+        auto program = std::make_unique<ProgStmtAST>(std::move(statement), std::move(next_prog));
         return program;
     }
     return nullptr;
@@ -23,7 +23,7 @@ std::unique_ptr<LineStmtAST> Parser::stmt() {
         std::unique_ptr<DeclarationStmtAST> decl = std::move(declaration());
         std::cout << "Declaration parsed..." << '\n';
 
-        auto statement = std::make_unique<LineStmtAST>(decl, nullptr);
+        auto statement = std::make_unique<LineStmtAST>(std::move(decl), nullptr);
         return statement;
     }
     else if (lexer->nextToken == ID) {
@@ -31,7 +31,7 @@ std::unique_ptr<LineStmtAST> Parser::stmt() {
         std::unique_ptr<AssignStmtAST> assign_ptr = std::move(assign());
         std::cout << "Assign parsed." << '\n';
 
-        auto statement = std::make_unique<LineStmtAST>(nullptr, assign_ptr);
+        auto statement = std::make_unique<LineStmtAST>(nullptr, std::move(assign_ptr));
         return statement;
     }
     std::cout << "ERROR - invalid statement." << '\n';
@@ -54,7 +54,7 @@ std::unique_ptr<DeclarationStmtAST> Parser::declaration() {
     }
     auto data_type = std::make_unique<IDStmtAST>(type_tok, type_lex);
     auto var = std::make_unique<IDStmtAST>(var_tok, var_lex);
-    auto decl = std::make_unique<DeclarationStmtAST>(data_type, var);
+    auto decl = std::make_unique<DeclarationStmtAST>(std::move(data_type), std::move(var));
 
     lexer->lex();
 
@@ -76,7 +76,7 @@ std::unique_ptr<AssignStmtAST> Parser::assign() {
         std::unique_ptr<ExprStmtAST> righthand_side = std::move(expr());
         std::cout << "Expr parsed." << '\n';
 
-        auto assignment = std::make_unique<AssignStmtAST>(lefthand_side, righthand_side);
+        auto assignment = std::make_unique<AssignStmtAST>(std::move(lefthand_side), std::move(righthand_side));
         return assignment;
     }
     std::cout << "ERROR - invalid assignment." << '\n';
@@ -92,7 +92,7 @@ std::unique_ptr<ExprStmtAST> Parser::expr() {
     std::unique_ptr<Expr_PStmtAST> expression_p = std::move(expr_p());
     std::cout << "Expr_p parsed." << '\n';
 
-    auto expression = std::make_unique<ExprStmtAST>(trm, expression_p);
+    auto expression = std::make_unique<ExprStmtAST>(std::move(trm), std::move(expression_p));
     return expression;
 }
 
@@ -110,7 +110,7 @@ std::unique_ptr<Expr_PStmtAST> Parser::expr_p() {
         std::cout << "Expr_p parsed." << '\n';
         // may need another lexer->lex() here
 
-        auto expression_p = std::make_unique<Expr_PStmtAST>(op_tok, trm, next_expression_p);
+        auto expression_p = std::make_unique<Expr_PStmtAST>(op_tok, std::move(trm), std::move(next_expression_p));
         return expression_p;
     }
 
@@ -127,7 +127,7 @@ std::unique_ptr<TermStmtAST> Parser::term() {
         std::unique_ptr<Term_PStmtAST> trm_p = std::move(term_p());
         std::cout << "Term_p parsed." << '\n';
 
-        auto trm = std::make_unique<TermStmtAST>(fctr, trm_p);
+        auto trm = std::make_unique<TermStmtAST>(std::move(fctr), std::move(trm_p));
         return trm;
     }
 
@@ -149,7 +149,7 @@ std::unique_ptr<Term_PStmtAST> Parser::term_p() {
         std::cout << "Term_p parsed." << '\n';
         // may need another lexer->lex() here
 
-        auto trm_p = std::make_unique<Term_PStmtAST>(op_tok, fctr, next_trm_p);
+        auto trm_p = std::make_unique<Term_PStmtAST>(op_tok, std::move(fctr), std::move(next_trm_p));
         return trm_p;
     }
 
@@ -164,7 +164,7 @@ std::unique_ptr<FactorStmtAST> Parser::factor() {
         lexer->lex();
 
         auto fctr_val = std::make_unique<IDStmtAST>(fac_tok, fac_lex);
-        auto fctr = std::make_unique<FactorStmtAST>(fctr_val);
+        auto fctr = std::make_unique<FactorStmtAST>(std::move(fctr_val), nullptr);
         return fctr;
     }
     else if (lexer->nextToken == LPAREN) {
@@ -183,7 +183,7 @@ std::unique_ptr<FactorStmtAST> Parser::factor() {
         if (lexer->nextToken == RPAREN) {
             lexer->lex();
 
-            auto fctr = std::make_unique<FactorStmtAST>(expression);
+            auto fctr = std::make_unique<FactorStmtAST>(nullptr, std::move(expression));
             return fctr;
         }
     }
