@@ -12,10 +12,17 @@ public:
     Token nextToken; // a variable to store the token of a given lexeme
     std::string lexeme; // a variable to store a lexeme
     FILE *file; // a variabel to point to a file stream
+    bool fileNotFound;
     char opSymbols[10] = {'+', '=', '-', '*', '/', '%', '<', '>', '&', '|'};
 
     Lexer(char* path) {
         file = fopen(path, "r");
+        if (file == NULL) {
+            fileNotFound = true; 
+        }
+        else {
+            fileNotFound = false;
+        }
     }
 
     // A method to check if a char is a operator symbol

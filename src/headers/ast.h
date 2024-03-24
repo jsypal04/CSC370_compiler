@@ -25,7 +25,7 @@ public:
 };
 
 // class for prog
-class ProgStmtAST : StmtAST {
+class ProgStmtAST : public StmtAST {
 public:
     std::unique_ptr<LineStmtAST> stmt;
     std::unique_ptr<ProgStmtAST> prog;
@@ -37,7 +37,7 @@ public:
 };
 
 // class for Stmts
-class LineStmtAST : StmtAST {
+class LineStmtAST : public StmtAST {
 public:
     std::unique_ptr<DeclarationStmtAST> declaration;
     std::unique_ptr<AssignStmtAST> assign;
@@ -49,7 +49,7 @@ public:
 };
 
 // class for declaration nodes
-class DeclarationStmtAST : StmtAST {
+class DeclarationStmtAST : public StmtAST {
 public:
     std::unique_ptr<IDStmtAST> type;
     std::unique_ptr<IDStmtAST> variable;
@@ -61,7 +61,7 @@ public:
 };
 
 // class for assignment nodes
-class AssignStmtAST : StmtAST {
+class AssignStmtAST : public StmtAST {
 public:
     std::unique_ptr<IDStmtAST> varID;
     std::unique_ptr<ExprStmtAST> RHS;
@@ -73,7 +73,7 @@ public:
 };
 
 // class for arithmetic expression nodes
-class ExprStmtAST : StmtAST {
+class ExprStmtAST : public StmtAST {
 public:
     std::unique_ptr<TermStmtAST> term;
     std::unique_ptr<Expr_PStmtAST> expr_p;
@@ -85,7 +85,7 @@ public:
 };
 
 // class for the expr_p production rule
-class Expr_PStmtAST : StmtAST {
+class Expr_PStmtAST : public StmtAST {
 public:
     Token op;
     std::unique_ptr<TermStmtAST> term;
@@ -98,7 +98,7 @@ public:
     }
 };
 
-class TermStmtAST : StmtAST {
+class TermStmtAST : public StmtAST {
 public:
     std::unique_ptr<FactorStmtAST> factor;
     std::unique_ptr<Term_PStmtAST> term_p;
@@ -109,7 +109,7 @@ public:
     }
 };
 
-class Term_PStmtAST : StmtAST {
+class Term_PStmtAST : public StmtAST {
 public:
     Token op;
     std::unique_ptr<FactorStmtAST> factor;
@@ -122,7 +122,7 @@ public:
     }
 };
 
-class FactorStmtAST : StmtAST {
+class FactorStmtAST : public StmtAST {
 public:
     std::unique_ptr<IDStmtAST> object;
     std::unique_ptr<ExprStmtAST> expr_object;
@@ -135,7 +135,7 @@ public:
 };
 
 // class to represent identifiers and keywords
-class IDStmtAST : StmtAST {
+class IDStmtAST : public StmtAST {
 public:
     Token token;
     std::string lexeme;
