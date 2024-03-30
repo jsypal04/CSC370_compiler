@@ -31,9 +31,9 @@ public:
     std::unique_ptr<ProgStmtAST> parse() {
         lexer->nextChar = getc(lexer->file);
         lexer->lex();
-        std::cout << "Parsing prog..." << '\n';
+        //std::cout << "Parsing prog..." << '\n';
         std::unique_ptr<ProgStmtAST> program = std::move(prog());
-        std::cout << "Prog parsed." << '\n';
+        //std::cout << "Prog parsed." << '\n';
 
         return program;
     }
