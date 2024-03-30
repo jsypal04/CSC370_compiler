@@ -5,4 +5,5 @@ add_executable(${PROJECT_NAME}
     main.cpp
     lexer.cpp
     parser.cpp
+    semantics.cpp
 )

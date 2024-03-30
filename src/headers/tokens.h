@@ -35,7 +35,8 @@ enum Token {
     RPAREN,
     LBRACE,
     RBRACE,
-    INVALID_BRACKET
+    INVALID_BRACKET,
+    ERROR
 };
 
 #endif
