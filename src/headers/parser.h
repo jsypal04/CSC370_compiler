@@ -14,13 +14,6 @@ public:
     // Parser Constructor. Currently it only creates a new Lexer refernce
     Parser(char* path) {
         lexer = new Lexer(path);
-
-        // TEST CODE
-        // lexer->nextChar = getc(lexer->file);
-        // do {
-        //     lexer->lex();
-        //     std::cout << "Token: " << lexer->nextToken << ", Lexeme: " << lexer->lexeme << '\n';
-        // } while (lexer->nextChar != EOF);
     }
 
     // A method to delete the data in the lexer reference once the parser is finished
@@ -38,22 +31,33 @@ public:
         return program;
     }
 
+    // These functions each parse a node of the AST and return that node's subtree
+
+    // Parses the program node
     std::unique_ptr<ProgStmtAST> prog();
 
+    // Parses the statement node
     std::unique_ptr<LineStmtAST> stmt();
 
+    // Parses the declaration node
     std::unique_ptr<DeclarationStmtAST> declaration();
 
+    // Parses the assignment node
     std::unique_ptr<AssignStmtAST> assign();
 
+    // Parses the expression node
     std::unique_ptr<ExprStmtAST> expr();
 
+    // Parses the expression p node
     std::unique_ptr<Expr_PStmtAST> expr_p();
 
+    // Parses the term node
     std::unique_ptr<TermStmtAST> term();
 
+    // Parses the term p node
     std::unique_ptr<Term_PStmtAST> term_p();
 
+    // Parses the factor node
     std::unique_ptr<FactorStmtAST> factor();
 };
 
