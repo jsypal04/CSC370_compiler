@@ -61,6 +61,9 @@ std::unique_ptr<DeclarationStmtAST> Parser::declaration() {
 
     // get the next token
     lexer->lex();
+    if (lexer->nextToken == ASSIGN_OP) {
+        std::cout << "ERROR - Cannot initialize a variable when declared.\n";
+    }
     // return the declaration node
     return decl;
 }
