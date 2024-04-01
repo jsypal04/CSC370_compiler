@@ -1,11 +1,12 @@
 #include <iostream>
 #include "headers/semantics.h"
 
-void Semantics::traverse_prog(std::unique_ptr<ProgStmtAST> prog) {
+std::unique_ptr<ProgStmtAST> Semantics::traverse_prog(std::unique_ptr<ProgStmtAST> prog) {
     traverse_stmt(std::move(prog->stmt));
     if (prog->prog != nullptr) {
         traverse_prog(std::move(prog->prog));
     }
+    return prog;
 }
 
 void Semantics::traverse_stmt(std::unique_ptr<LineStmtAST> stmt) {

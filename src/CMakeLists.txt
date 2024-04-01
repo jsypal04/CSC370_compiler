@@ -6,4 +6,5 @@ add_executable(${PROJECT_NAME}
     lexer.cpp
     parser.cpp
     semantics.cpp
+    TACGenerator.cpp
 )

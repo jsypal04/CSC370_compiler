@@ -14,7 +14,7 @@ public:
     // These are functions to traverse the AST and check for semantic errors
 
     // Traverses the program node
-    void traverse_prog(std::unique_ptr<ProgStmtAST> prog);
+    std::unique_ptr<ProgStmtAST> traverse_prog(std::unique_ptr<ProgStmtAST> prog);
 
     // Traverses the statement node
     void traverse_stmt(std::unique_ptr<LineStmtAST> stmt);
