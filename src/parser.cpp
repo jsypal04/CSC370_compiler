@@ -1,37 +1,37 @@
 #include "headers/parser.h"
 
-std::unique_ptr<ProgStmtAST> Parser::prog() {
+ProgStmtAST* Parser::prog() {
     // parse the first line of the program
-    std::unique_ptr<LineStmtAST> statement = std::move(stmt());
+    LineStmtAST* statement = stmt();
     // if the next token is a newline then parse the rest of the program
     if (lexer->nextToken == NEWLINE) {
         lexer->lex();
         // parses the rest of the program
-        std::unique_ptr<ProgStmtAST> next_prog = std::move(prog());
+        ProgStmtAST* next_prog = prog();
 
         // creates a pointer to a ProgStmtAST class and returns that pointer
-        auto program = std::make_unique<ProgStmtAST>(std::move(statement), std::move(next_prog));
+        auto program = new ProgStmtAST(statement, next_prog);
         return program;
     }
     // if the next token is not a newline then the program is done
     // creates a pointer to a ProgStmtAST class and returns the pointer
-    auto program = std::make_unique<ProgStmtAST>(std::move(statement), nullptr);
+    auto program = new ProgStmtAST(statement, nullptr);
     return program;
 }
 
-std::unique_ptr<LineStmtAST> Parser::stmt() {
+LineStmtAST* Parser::stmt() {
     // if the next token is a type keyword then parse a variable declaration
     if (lexer->nextToken == INT_KWD || lexer->nextToken == FLOAT_KWD) {
-        std::unique_ptr<DeclarationStmtAST> decl = std::move(declaration());
+        DeclarationStmtAST* decl = declaration();
 
-        auto statement = std::make_unique<LineStmtAST>(std::move(decl), nullptr);
+        auto statement = new LineStmtAST(decl, nullptr);
         return statement;
     }
     // if the next token is an identifier then parse an assignment
     else if (lexer->nextToken == ID) {
-        std::unique_ptr<AssignStmtAST> assign_ptr = std::move(assign());
+        AssignStmtAST* assign_ptr = assign();
 
-        auto statement = std::make_unique<LineStmtAST>(nullptr, std::move(assign_ptr));
+        auto statement = new LineStmtAST(nullptr, assign_ptr);
         return statement;
     }
     // otherwise this is an undefined statement
@@ -39,7 +39,7 @@ std::unique_ptr<LineStmtAST> Parser::stmt() {
     return nullptr;
 }
 
-std::unique_ptr<DeclarationStmtAST> Parser::declaration() {
+DeclarationStmtAST* Parser::declaration() {
     // get the type token and lexeme
     Token type_tok = lexer->nextToken;
     std::string type_lex = lexer->lexeme;
@@ -55,9 +55,9 @@ std::unique_ptr<DeclarationStmtAST> Parser::declaration() {
         return nullptr;
     }
     // create two IDStmtAST classes for the type and variable and add them to the declaration class
-    auto data_type = std::make_unique<IDStmtAST>(type_tok, type_lex);
-    auto var = std::make_unique<IDStmtAST>(var_tok, var_lex);
-    auto decl = std::make_unique<DeclarationStmtAST>(std::move(data_type), std::move(var));
+    auto data_type = new IDStmtAST(type_tok, type_lex);
+    auto var = new IDStmtAST(var_tok, var_lex);
+    auto decl = new DeclarationStmtAST(data_type, var);
 
     // get the next token
     lexer->lex();
@@ -68,9 +68,9 @@ std::unique_ptr<DeclarationStmtAST> Parser::declaration() {
     return decl;
 }
 
-std::unique_ptr<AssignStmtAST> Parser::assign() {
+AssignStmtAST* Parser::assign() {
     // make an IDStmtAST for the variable on the lefthand side
-    auto lefthand_side = std::make_unique<IDStmtAST>(lexer->nextToken, lexer->lexeme);
+    auto lefthand_side = new IDStmtAST(lexer->nextToken, lexer->lexeme);
 
     // check to make sure the next token is the assignment operator
     lexer->lex();
@@ -82,27 +82,27 @@ std::unique_ptr<AssignStmtAST> Parser::assign() {
     lexer->lex();
     if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT || lexer->nextToken == LPAREN) {
         // parse the expression, add it to the assignment node and return the assignment node
-        std::unique_ptr<ExprStmtAST> righthand_side = std::move(expr());
-        auto assignment = std::make_unique<AssignStmtAST>(std::move(lefthand_side), std::move(righthand_side));
+        ExprStmtAST* righthand_side = expr();
+        auto assignment = new AssignStmtAST(lefthand_side, righthand_side);
         return assignment;
     }
     std::cout << "ERROR - invalid assignment." << '\n';
     return nullptr;
 }
 
-std::unique_ptr<ExprStmtAST> Parser::expr() {
+ExprStmtAST* Parser::expr() {
     // parse the term node
-    std::unique_ptr<TermStmtAST> trm = std::move(term());
+    TermStmtAST* trm = term();
 
     // parse the expression prime node
-    std::unique_ptr<Expr_PStmtAST> expression_p = std::move(expr_p());
+    Expr_PStmtAST* expression_p = expr_p();
 
     // return expression node
-    auto expression = std::make_unique<ExprStmtAST>(std::move(trm), std::move(expression_p));
+    auto expression = new ExprStmtAST(trm, expression_p);
     return expression;
 }
 
-std::unique_ptr<Expr_PStmtAST> Parser::expr_p() {
+Expr_PStmtAST* Parser::expr_p() {
     // if the next token is a +/- parse another expr_p
     if (lexer->nextToken == ADD_OP || lexer->nextToken == SUB_OP) {
         // get the operator token
@@ -110,27 +110,27 @@ std::unique_ptr<Expr_PStmtAST> Parser::expr_p() {
         
         // parse the term and next expr_p
         lexer->lex();
-        std::unique_ptr<TermStmtAST> trm = std::move(term());
-        std::unique_ptr<Expr_PStmtAST> next_expression_p = std::move(expr_p());
+        TermStmtAST* trm = term();
+        Expr_PStmtAST* next_expression_p = expr_p();
         // may need another lexer->lex() here
 
         // add the operator, term, and expr_p to the expr_p node and return
-        auto expression_p = std::make_unique<Expr_PStmtAST>(op_tok, std::move(trm), std::move(next_expression_p));
+        auto expression_p = new Expr_PStmtAST(op_tok, trm, next_expression_p);
         return expression_p;
     }
     // otherwise return nullptr because there is nothing more to parse
     return nullptr;
 }
 
-std::unique_ptr<TermStmtAST> Parser::term() {
+TermStmtAST* Parser::term() {
     // check once more that the first token is a valid term token (may not be necessary but let's be safe shall we?)
     if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT || lexer->nextToken == LPAREN) {
         // parse the factor node and the term_p node
-        std::unique_ptr<FactorStmtAST> fctr = std::move(factor());
-        std::unique_ptr<Term_PStmtAST> trm_p = std::move(term_p());
+        FactorStmtAST* fctr = factor();
+        Term_PStmtAST* trm_p = term_p();
 
         // add factor and term_p and return the term node
-        auto trm = std::make_unique<TermStmtAST>(std::move(fctr), std::move(trm_p));
+        auto trm = new TermStmtAST(fctr, trm_p);
         return trm;
     }
 
@@ -138,7 +138,7 @@ std::unique_ptr<TermStmtAST> Parser::term() {
     return nullptr;
 }
 
-std::unique_ptr<Term_PStmtAST> Parser::term_p() {
+Term_PStmtAST* Parser::term_p() {
     // if the next token is a times/divide/modulus parse another term_p
     if (lexer->nextToken == MULT_OP || lexer->nextToken == DIV_OP || lexer->nextToken == MOD_OP) {
         // get the operator
@@ -146,11 +146,11 @@ std::unique_ptr<Term_PStmtAST> Parser::term_p() {
 
         // parse the factor and term_p, add to the parent term_p node and return it
         lexer->lex();
-        std::unique_ptr<FactorStmtAST> fctr = std::move(factor());
-        std::unique_ptr<Term_PStmtAST> next_trm_p = std::move(term_p());
+        FactorStmtAST* fctr = factor();
+        Term_PStmtAST* next_trm_p = term_p();
         // may need another lexer->lex() here
 
-        auto trm_p = std::make_unique<Term_PStmtAST>(op_tok, std::move(fctr), std::move(next_trm_p));
+        auto trm_p = new Term_PStmtAST(op_tok, fctr, next_trm_p);
         return trm_p;
     }
 
@@ -158,25 +158,25 @@ std::unique_ptr<Term_PStmtAST> Parser::term_p() {
     return nullptr;
 }
 
-std::unique_ptr<FactorStmtAST> Parser::factor() {
+FactorStmtAST* Parser::factor() {
     // if the next token is an identifier, int literal, or float literal return the factor
     if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
         Token fac_tok = lexer->nextToken;
         std::string fac_lex = lexer->lexeme;
         lexer->lex();
 
-        auto fctr_val = std::make_unique<IDStmtAST>(fac_tok, fac_lex);
-        auto fctr = std::make_unique<FactorStmtAST>(std::move(fctr_val), nullptr);
+        auto fctr_val = new IDStmtAST(fac_tok, fac_lex);
+        auto fctr = new FactorStmtAST(fctr_val, nullptr);
         return fctr;
     }
     // otherwise, if the next token is a left parenthesis, parse an expr and return it
     else if (lexer->nextToken == LPAREN) {
-        std::unique_ptr<ExprStmtAST> expression;
+        ExprStmtAST* expression;
 
         // parse the expression if the next token is a valid start to an arithmetic expression
         lexer->lex();
         if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT || lexer->nextToken == LPAREN) {
-            expression = std::move(expr());
+            expression = expr();
         }
         else {
             std::cout << "ERROR - invalid factor.\n";
@@ -187,7 +187,7 @@ std::unique_ptr<FactorStmtAST> Parser::factor() {
             lexer->lex();
 
             // make the factor and return it
-            auto fctr = std::make_unique<FactorStmtAST>(nullptr, std::move(expression));
+            auto fctr = new FactorStmtAST(nullptr, expression);
             return fctr;
         }
     }

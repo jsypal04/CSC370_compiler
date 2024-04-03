@@ -21,11 +21,11 @@ public:
         delete lexer;
     }
 
-    std::unique_ptr<ProgStmtAST> parse() {
+    ProgStmtAST* parse() {
         lexer->nextChar = getc(lexer->file);
         lexer->lex();
         //std::cout << "Parsing prog..." << '\n';
-        std::unique_ptr<ProgStmtAST> program = std::move(prog());
+        ProgStmtAST* program = prog();
         //std::cout << "Prog parsed." << '\n';
 
         return program;
@@ -34,31 +34,31 @@ public:
     // These functions each parse a node of the AST and return that node's subtree
 
     // Parses the program node
-    std::unique_ptr<ProgStmtAST> prog();
+    ProgStmtAST* prog();
 
     // Parses the statement node
-    std::unique_ptr<LineStmtAST> stmt();
+    LineStmtAST* stmt();
 
     // Parses the declaration node
-    std::unique_ptr<DeclarationStmtAST> declaration();
+    DeclarationStmtAST* declaration();
 
     // Parses the assignment node
-    std::unique_ptr<AssignStmtAST> assign();
+    AssignStmtAST* assign();
 
     // Parses the expression node
-    std::unique_ptr<ExprStmtAST> expr();
+    ExprStmtAST* expr();
 
     // Parses the expression p node
-    std::unique_ptr<Expr_PStmtAST> expr_p();
+    Expr_PStmtAST* expr_p();
 
     // Parses the term node
-    std::unique_ptr<TermStmtAST> term();
+    TermStmtAST* term();
 
     // Parses the term p node
-    std::unique_ptr<Term_PStmtAST> term_p();
+    Term_PStmtAST* term_p();
 
     // Parses the factor node
-    std::unique_ptr<FactorStmtAST> factor();
+    FactorStmtAST* factor();
 };
 
 #endif

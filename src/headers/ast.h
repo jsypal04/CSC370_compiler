@@ -27,60 +27,60 @@ public:
 // class for prog
 class ProgStmtAST : public StmtAST {
 public:
-    std::unique_ptr<LineStmtAST> stmt;
-    std::unique_ptr<ProgStmtAST> prog;
+    LineStmtAST* stmt;
+    ProgStmtAST* prog;
 
-    ProgStmtAST(std::unique_ptr<LineStmtAST> first_stmt, std::unique_ptr<ProgStmtAST> program) {
-        stmt = std::move(first_stmt);
-        prog = std::move(program);
+    ProgStmtAST(LineStmtAST* first_stmt, ProgStmtAST* program) {
+        stmt = first_stmt;
+        prog = program;
     }
 };
 
 // class for Stmts
 class LineStmtAST : public StmtAST {
 public:
-    std::unique_ptr<DeclarationStmtAST> declaration;
-    std::unique_ptr<AssignStmtAST> assign;
+    DeclarationStmtAST* declaration;
+    AssignStmtAST* assign;
 
-    LineStmtAST(std::unique_ptr<DeclarationStmtAST> decl_ptr, std::unique_ptr<AssignStmtAST> assign_ptr) {
-        declaration = std::move(decl_ptr);
-        assign = std::move(assign_ptr);
+    LineStmtAST(DeclarationStmtAST* decl_ptr, AssignStmtAST* assign_ptr) {
+        declaration = decl_ptr;
+        assign = assign_ptr;
     }
 };
 
 // class for declaration nodes
 class DeclarationStmtAST : public StmtAST {
 public:
-    std::unique_ptr<IDStmtAST> type;
-    std::unique_ptr<IDStmtAST> variable;
+    IDStmtAST* type;
+    IDStmtAST* variable;
     
-    DeclarationStmtAST(std::unique_ptr<IDStmtAST> data_type, std::unique_ptr<IDStmtAST> varName) {
-        type = std::move(data_type);
-        variable = std::move(varName);
+    DeclarationStmtAST(IDStmtAST* data_type, IDStmtAST* varName) {
+        type = data_type;
+        variable = varName;
     }
 };
 
 // class for assignment nodes
 class AssignStmtAST : public StmtAST {
 public:
-    std::unique_ptr<IDStmtAST> varID;
-    std::unique_ptr<ExprStmtAST> RHS;
+    IDStmtAST* varID;
+    ExprStmtAST* RHS;
 
-    AssignStmtAST(std::unique_ptr<IDStmtAST> name, std::unique_ptr<ExprStmtAST> rhs) {
-        varID = std::move(name);
-        RHS = std::move(rhs);
+    AssignStmtAST(IDStmtAST* name, ExprStmtAST* rhs) {
+        varID = name;
+        RHS = rhs;
     }
 };
 
 // class for arithmetic expression nodes
 class ExprStmtAST : public StmtAST {
 public:
-    std::unique_ptr<TermStmtAST> term;
-    std::unique_ptr<Expr_PStmtAST> expr_p;
+    TermStmtAST* term;
+    Expr_PStmtAST* expr_p;
 
-    ExprStmtAST(std::unique_ptr<TermStmtAST> trm, std::unique_ptr<Expr_PStmtAST> exp) {
-        term = std::move(trm);
-        expr_p = std::move(exp);
+    ExprStmtAST(TermStmtAST* trm, Expr_PStmtAST* exp) {
+        term = trm;
+        expr_p = exp;
     }
 };
 
@@ -88,49 +88,49 @@ public:
 class Expr_PStmtAST : public StmtAST {
 public:
     Token op;
-    std::unique_ptr<TermStmtAST> term;
-    std::unique_ptr<Expr_PStmtAST> expr_p;
+    TermStmtAST* term;
+    Expr_PStmtAST* expr_p;
 
-    Expr_PStmtAST(Token o, std::unique_ptr<TermStmtAST> trm, std::unique_ptr<Expr_PStmtAST> exp) {
+    Expr_PStmtAST(Token o, TermStmtAST* trm, Expr_PStmtAST* exp) {
         op = o;
-        term = std::move(trm);
-        expr_p = std::move(exp);
+        term = trm;
+        expr_p = exp;
     }
 };
 
 class TermStmtAST : public StmtAST {
 public:
-    std::unique_ptr<FactorStmtAST> factor;
-    std::unique_ptr<Term_PStmtAST> term_p;
+    FactorStmtAST* factor;
+    Term_PStmtAST* term_p;
 
-    TermStmtAST(std::unique_ptr<FactorStmtAST> fctr, std::unique_ptr<Term_PStmtAST> trm_p) {
-        factor = std::move(fctr);
-        term_p = std::move(trm_p);
+    TermStmtAST(FactorStmtAST* fctr, Term_PStmtAST* trm_p) {
+        factor = fctr;
+        term_p = trm_p;
     }
 };
 
 class Term_PStmtAST : public StmtAST {
 public:
     Token op;
-    std::unique_ptr<FactorStmtAST> factor;
-    std::unique_ptr<Term_PStmtAST> term_p;
+    FactorStmtAST* factor;
+    Term_PStmtAST* term_p;
 
-    Term_PStmtAST(Token o, std::unique_ptr<FactorStmtAST> fctr, std::unique_ptr<Term_PStmtAST> trm_p) {
+    Term_PStmtAST(Token o, FactorStmtAST* fctr, Term_PStmtAST* trm_p) {
         op = o;
-        factor = std::move(fctr);
-        term_p = std::move(trm_p);
+        factor = fctr;
+        term_p = trm_p;
     }
 };
 
 class FactorStmtAST : public StmtAST {
 public:
-    std::unique_ptr<IDStmtAST> object;
-    std::unique_ptr<ExprStmtAST> expr_object;
+    IDStmtAST* object;
+    ExprStmtAST* expr_object;
 
     // Enter (nullptr, ExprStmtAST) if the factor is an expression and (IDStmtAST, nullptr) if the factor is a variable/literal
-    FactorStmtAST(std::unique_ptr<IDStmtAST> obj, std::unique_ptr<ExprStmtAST> expr_obj) {
-        object = std::move(obj);
-        expr_object = std::move(expr_obj);
+    FactorStmtAST(IDStmtAST* obj, ExprStmtAST* expr_obj) {
+        object = obj;
+        expr_object = expr_obj;
     }
 };
 
