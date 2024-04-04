@@ -8,6 +8,7 @@ int main(int argc, char* argv[]) {
     
     Parser* parser = new Parser(path);
     Semantics semantic_analyzer;
+    TACGenerator gen;
 
     if (parser->lexer->fileNotFound) {
         std::cout << "File \"" << path << "\" not found.\n";
@@ -19,8 +20,10 @@ int main(int argc, char* argv[]) {
     parser = nullptr;
 
     semantic_analyzer.traverse_prog(program);
+    gen.traverse_prog(program);
+    gen.destroyStream();
+
     delete program;
     program = nullptr;
-
     return 0;
 }

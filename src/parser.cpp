@@ -36,7 +36,7 @@ LineStmtAST* Parser::stmt() {
     }
     // otherwise this is an undefined statement
     std::cout << "ERROR - invalid statement." << '\n';
-    return nullptr;
+    exit(-1);
 }
 
 DeclarationStmtAST* Parser::declaration() {
@@ -52,7 +52,7 @@ DeclarationStmtAST* Parser::declaration() {
     // check to make sure the nextToken is actually an identifier
     if (lexer->nextToken != ID) {
         std::cout << "ERROR - invalid declaration." << '\n';
-        return nullptr;
+        exit(-1);
     }
     // create two IDStmtAST classes for the type and variable and add them to the declaration class
     auto data_type = new IDStmtAST(type_tok, type_lex);
@@ -63,6 +63,7 @@ DeclarationStmtAST* Parser::declaration() {
     lexer->lex();
     if (lexer->nextToken == ASSIGN_OP) {
         std::cout << "ERROR - Cannot initialize a variable when declared.\n";
+        exit(-1);
     }
     // return the declaration node
     return decl;
@@ -76,7 +77,7 @@ AssignStmtAST* Parser::assign() {
     lexer->lex();
     if (lexer->nextToken != ASSIGN_OP) {
         std::cout << "ERROR - invalid assignment." << '\n';
-        return nullptr;
+        exit(-1);
     }
     // check to make sure the next token is a valid start to an arithmetic expression
     lexer->lex();
@@ -87,7 +88,7 @@ AssignStmtAST* Parser::assign() {
         return assignment;
     }
     std::cout << "ERROR - invalid assignment." << '\n';
-    return nullptr;
+    exit(-1);
 }
 
 ExprStmtAST* Parser::expr() {
@@ -135,7 +136,7 @@ TermStmtAST* Parser::term() {
     }
 
     std::cout << "ERROR - invalid term." << '\n';
-    return nullptr;
+    exit(-1);
 }
 
 Term_PStmtAST* Parser::term_p() {
@@ -180,7 +181,7 @@ FactorStmtAST* Parser::factor() {
         }
         else {
             std::cout << "ERROR - invalid factor.\n";
-            return nullptr;
+            exit(-1);
         }
         // check to make sure there is a close parenthesis
         if (lexer->nextToken == RPAREN) {
@@ -193,5 +194,5 @@ FactorStmtAST* Parser::factor() {
     }
     // Otherwise, the factor is invalid
     std::cout << "ERROR - invalid factor." << '\n';
-    return nullptr;
+    exit(-1);
 }
