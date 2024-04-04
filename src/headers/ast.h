@@ -24,63 +24,73 @@ public:
     virtual ~StmtAST() = default;
 };
 
-// class for prog
-class ProgStmtAST : public StmtAST {
-public:
-    LineStmtAST* stmt;
-    ProgStmtAST* prog;
 
-    ProgStmtAST(LineStmtAST* first_stmt, ProgStmtAST* program) {
-        stmt = first_stmt;
-        prog = program;
+// class to represent identifiers and keywords
+class IDStmtAST : public StmtAST {
+public:
+    Token token;
+    std::string lexeme;
+
+    IDStmtAST(Token tok, std::string lex) {
+        token = tok;
+        lexeme = lex;
     }
 };
 
-// class for Stmts
-class LineStmtAST : public StmtAST {
+class FactorStmtAST : public StmtAST {
 public:
-    DeclarationStmtAST* declaration;
-    AssignStmtAST* assign;
+    IDStmtAST* object;
+    ExprStmtAST* expr_object;
 
-    LineStmtAST(DeclarationStmtAST* decl_ptr, AssignStmtAST* assign_ptr) {
-        declaration = decl_ptr;
-        assign = assign_ptr;
+    // Enter (nullptr, ExprStmtAST) if the factor is an expression and (IDStmtAST, nullptr) if the factor is a variable/literal
+    FactorStmtAST(IDStmtAST* obj, ExprStmtAST* expr_obj) {
+        object = obj;
+        expr_object = expr_obj;
+    }
+
+    ~FactorStmtAST() {
+        delete object;
+        delete expr_object;
+        object = nullptr;
+        expr_object = nullptr;
     }
 };
 
-// class for declaration nodes
-class DeclarationStmtAST : public StmtAST {
+class Term_PStmtAST : public StmtAST {
 public:
-    IDStmtAST* type;
-    IDStmtAST* variable;
-    
-    DeclarationStmtAST(IDStmtAST* data_type, IDStmtAST* varName) {
-        type = data_type;
-        variable = varName;
+    Token op;
+    FactorStmtAST* factor;
+    Term_PStmtAST* term_p;
+
+    Term_PStmtAST(Token o, FactorStmtAST* fctr, Term_PStmtAST* trm_p) {
+        op = o;
+        factor = fctr;
+        term_p = trm_p;
+    }
+
+    ~Term_PStmtAST() {
+        delete factor;
+        delete term_p;
+        factor = nullptr;
+        term_p = nullptr;
     }
 };
 
-// class for assignment nodes
-class AssignStmtAST : public StmtAST {
+class TermStmtAST : public StmtAST {
 public:
-    IDStmtAST* varID;
-    ExprStmtAST* RHS;
+    FactorStmtAST* factor;
+    Term_PStmtAST* term_p;
 
-    AssignStmtAST(IDStmtAST* name, ExprStmtAST* rhs) {
-        varID = name;
-        RHS = rhs;
+    TermStmtAST(FactorStmtAST* fctr, Term_PStmtAST* trm_p) {
+        factor = fctr;
+        term_p = trm_p;
     }
-};
 
-// class for arithmetic expression nodes
-class ExprStmtAST : public StmtAST {
-public:
-    TermStmtAST* term;
-    Expr_PStmtAST* expr_p;
-
-    ExprStmtAST(TermStmtAST* trm, Expr_PStmtAST* exp) {
-        term = trm;
-        expr_p = exp;
+    ~TermStmtAST() {
+        delete factor;
+        delete term_p;
+        factor = nullptr;
+        term_p = nullptr;
     }
 };
 
@@ -96,53 +106,107 @@ public:
         term = trm;
         expr_p = exp;
     }
-};
 
-class TermStmtAST : public StmtAST {
-public:
-    FactorStmtAST* factor;
-    Term_PStmtAST* term_p;
-
-    TermStmtAST(FactorStmtAST* fctr, Term_PStmtAST* trm_p) {
-        factor = fctr;
-        term_p = trm_p;
+    ~Expr_PStmtAST() {
+        delete term;
+        delete expr_p;
+        term = nullptr;
+        expr_p = nullptr;
     }
 };
 
-class Term_PStmtAST : public StmtAST {
+// class for arithmetic expression nodes
+class ExprStmtAST : public StmtAST {
 public:
-    Token op;
-    FactorStmtAST* factor;
-    Term_PStmtAST* term_p;
+    TermStmtAST* term;
+    Expr_PStmtAST* expr_p;
 
-    Term_PStmtAST(Token o, FactorStmtAST* fctr, Term_PStmtAST* trm_p) {
-        op = o;
-        factor = fctr;
-        term_p = trm_p;
+    ExprStmtAST(TermStmtAST* trm, Expr_PStmtAST* exp) {
+        term = trm;
+        expr_p = exp;
+    }
+
+    ~ExprStmtAST() {
+        delete term;
+        delete expr_p;
+        term = nullptr;
+        expr_p = nullptr;
     }
 };
 
-class FactorStmtAST : public StmtAST {
+// class for assignment nodes
+class AssignStmtAST : public StmtAST {
 public:
-    IDStmtAST* object;
-    ExprStmtAST* expr_object;
+    IDStmtAST* varID;
+    ExprStmtAST* RHS;
 
-    // Enter (nullptr, ExprStmtAST) if the factor is an expression and (IDStmtAST, nullptr) if the factor is a variable/literal
-    FactorStmtAST(IDStmtAST* obj, ExprStmtAST* expr_obj) {
-        object = obj;
-        expr_object = expr_obj;
+    AssignStmtAST(IDStmtAST* name, ExprStmtAST* rhs) {
+        varID = name;
+        RHS = rhs;
+    }
+
+    ~AssignStmtAST() {
+        delete varID;
+        delete RHS;
+        varID = nullptr;
+        RHS = nullptr;
     }
 };
 
-// class to represent identifiers and keywords
-class IDStmtAST : public StmtAST {
+// class for declaration nodes
+class DeclarationStmtAST : public StmtAST {
 public:
-    Token token;
-    std::string lexeme;
+    IDStmtAST* type;
+    IDStmtAST* variable;
+    
+    DeclarationStmtAST(IDStmtAST* data_type, IDStmtAST* varName) {
+        type = data_type;
+        variable = varName;
+    }
 
-    IDStmtAST(Token tok, std::string lex) {
-        token = tok;
-        lexeme = lex;
+    ~DeclarationStmtAST() {
+        delete type;
+        delete variable;
+        type = nullptr;
+        variable = nullptr;
+    }
+};
+
+// class for Stmts
+class LineStmtAST : public StmtAST {
+public:
+    DeclarationStmtAST* declaration;
+    AssignStmtAST* assign;
+
+    LineStmtAST(DeclarationStmtAST* decl_ptr, AssignStmtAST* assign_ptr) {
+        declaration = decl_ptr;
+        assign = assign_ptr;
+    }
+
+    ~LineStmtAST() {
+        delete declaration;
+        delete assign;
+        declaration = nullptr;
+        assign = nullptr;
+    }
+};
+
+// class for prog
+class ProgStmtAST : public StmtAST {
+public:
+    LineStmtAST* stmt;
+    ProgStmtAST* prog;
+
+    ProgStmtAST(LineStmtAST* first_stmt, ProgStmtAST* program) {
+        stmt = first_stmt;
+        prog = program;
+    }
+
+    ~ProgStmtAST() {
+        delete stmt;
+        delete prog;
+        stmt = nullptr;
+        prog = nullptr;
     }
 };
 

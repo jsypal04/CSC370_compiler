@@ -16,9 +16,9 @@ public:
         lexer = new Lexer(path);
     }
 
-    // A method to delete the data in the lexer reference once the parser is finished
-    void destroyLexer() {
+    ~Parser() {
         delete lexer;
+        lexer = nullptr;
     }
 
     ProgStmtAST* parse() {

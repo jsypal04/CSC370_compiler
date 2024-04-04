@@ -6,18 +6,21 @@
 int main(int argc, char* argv[]) {
     char* path = argv[1];
     
-    Parser parser(path);
+    Parser* parser = new Parser(path);
     Semantics semantic_analyzer;
 
-    if (parser.lexer->fileNotFound) {
+    if (parser->lexer->fileNotFound) {
         std::cout << "File \"" << path << "\" not found.\n";
         return -1;
     }
 
-    ProgStmtAST* program = parser.parse();
-    semantic_analyzer.traverse_prog(program);
+    ProgStmtAST* program = parser->parse();
+    delete parser;
+    parser = nullptr;
 
-    parser.destroyLexer();
+    semantic_analyzer.traverse_prog(program);
+    delete program;
+    program = nullptr;
 
     return 0;
 }
