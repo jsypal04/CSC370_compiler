@@ -1,2 +1,4 @@
 int helloWorld
-helloWorld = 12 + 3 * (4 + 2)
+int x
+x = 5 * (3 + 4)
+helloWorld = 12 + 3 * (x + 2)

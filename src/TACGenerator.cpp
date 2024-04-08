@@ -3,7 +3,6 @@
 #include "headers/TACGenerator.h"
 
 void TACGenerator::traverse_prog(ProgStmtAST* prog) {
-    std::cout << "Entering program...\n";
     traverse_stmt(prog->stmt);
     if (prog->prog != nullptr) {
         traverse_prog(prog->prog);
@@ -11,14 +10,12 @@ void TACGenerator::traverse_prog(ProgStmtAST* prog) {
 }
 
 void TACGenerator::traverse_stmt(LineStmtAST* stmt) {
-    std::cout << "Entering Statement...\n";
     if (stmt->assign != nullptr) {
         traverse_assign(stmt->assign);
     }
 }
 
 void TACGenerator::traverse_assign(AssignStmtAST* assign) {
-    std::cout << "Entering Assignment...\n";
     std::string exprVar = traverse_expr(assign->RHS);
     *output << assign->varID->lexeme << '=' << exprVar << '\n';
 }
