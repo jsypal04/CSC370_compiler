@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
     
     Parser* parser = new Parser(path);
     Semantics semantic_analyzer;
-    TACGenerator gen;
+    TACGenerator gen("a.tac");
 
     if (parser->lexer->fileNotFound) {
         std::cout << "File \"" << path << "\" not found.\n";

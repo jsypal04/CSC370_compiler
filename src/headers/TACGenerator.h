@@ -7,10 +7,21 @@
 // Class to traverse the AST and produce a three address code translation of the source code in a .tac file
 class TACGenerator {
 private:
-    std::ofstream* output = new std::ofstream("a.tac");
+    std::ofstream* output;
     int tempCount = 0;
 
 public:
+    TACGenerator(const char* path) {
+        output = new std::ofstream(path);
+        switch (output->is_open()) {
+            case 0:
+                std::cout << "a.tac failed to open\n";
+                break;
+            default:
+                std::cout << "a.tac opened successfully\n";
+        }
+    }
+
     void destroyStream() {
         output->close();
         delete output;
