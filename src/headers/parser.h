@@ -45,6 +45,10 @@ public:
     // Parses the assignment node
     AssignStmtAST* assign();
 
+    /********************************************
+     * PARSE FUNCTIONS FOR ARITHMETIC EXPRESSIONS
+    ********************************************/
+
     // Parses the expression node
     ExprStmtAST* expr();
 
@@ -59,6 +63,31 @@ public:
 
     // Parses the factor node
     FactorStmtAST* factor();
+
+    /*****************************************
+     * PARSE FUNCTIONS FOR BOOLEAN EXPRESSIONS
+    *****************************************/
+
+    // Parses the boo_expr node
+    void bool_expr();
+
+    // Parses the bool_expr_p node
+    void bool_expr_p();
+
+    // Parses the bool_term node
+    void bool_term();
+
+    // Parses the bool_term_p node
+    void bool_term_p();
+
+    // Parses the bool_factor node
+    void bool_factor();
+
+    // Parses the relation node
+    void relation();
+
+    // Parses the rel_operand node
+    void rel_operand();
 };
 
 #endif

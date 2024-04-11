@@ -91,6 +91,10 @@ AssignStmtAST* Parser::assign() {
     exit(-1);
 }
 
+/*******************************************************
+ * PARSE FUNCTION DEFINITIONS FOR ARITHMETIC EXPRESSIONS
+*******************************************************/
+
 ExprStmtAST* Parser::expr() {
     // parse the term node
     TermStmtAST* trm = term();
@@ -195,4 +199,32 @@ FactorStmtAST* Parser::factor() {
     // Otherwise, the factor is invalid
     std::cout << "ERROR - invalid factor." << '\n';
     exit(-1);
+}
+
+/****************************************************
+ * PARSE FUNCTION DEFINITIONS FOR BOOLEAN EXPRESSIONS
+****************************************************/
+
+void Parser::bool_expr() {
+    bool_term();
+    bool_term_p();
+}
+
+void Parser::bool_expr_p() {
+    if (lexer->nextToken == OR) {
+        bool_term();
+        bool_expr_p();
+    }
+}
+
+void Parser::bool_term() {
+    bool_factor();
+    bool_term_p();
+}
+
+void Parser::bool_term_p() {
+    if (lexer->nextToken == AND) {
+        bool_factor();
+        bool_term_p();
+    }
 }
