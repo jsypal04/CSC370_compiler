@@ -87,6 +87,10 @@ AssignStmtAST* Parser::assign() {
         auto assignment = new AssignStmtAST(lefthand_side, righthand_side);
         return assignment;
     }
+    else if (lexer->nextToken == LBRACK) {
+        lexer->lex();
+        bool_expr();
+    }
     std::cout << "ERROR - invalid assignment." << '\n';
     exit(-1);
 }
@@ -212,6 +216,7 @@ void Parser::bool_expr() {
 
 void Parser::bool_expr_p() {
     if (lexer->nextToken == OR) {
+        lexer->lex();
         bool_term();
         bool_expr_p();
     }
@@ -224,7 +229,70 @@ void Parser::bool_term() {
 
 void Parser::bool_term_p() {
     if (lexer->nextToken == AND) {
+        lexer->lex();
         bool_factor();
         bool_term_p();
     }
+    lexer->lex();
+}
+
+void Parser::bool_factor() {
+    if (lexer->nextToken == NOT) {
+        lexer->lex();
+        if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
+            rel_operand();
+            relation();
+        }
+        else if (lexer->nextToken == BOOL_LIT) {
+            std::cout << "Boolean literal: " << lexer->lexeme << '\n';
+        }
+        else if (lexer->nextToken == LPAREN) {
+            lexer->lex();
+            bool_expr();
+            if (lexer->nextToken != RPAREN) {
+                std::cout << "ERROR - Invalid factor.\n";
+                exit(-1);
+            }
+        }
+        else {
+            std::cout << "ERROR - Invalid factor.\n";
+        }
+    }
+    else {
+        if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
+            rel_operand();
+            relation();
+        }
+        else if (lexer->nextToken == BOOL_LIT) {
+            std::cout << "Boolean literal: " << lexer->lexeme << '\n';
+        }
+        else if (lexer->nextToken == LPAREN) {
+            lexer->lex();
+            bool_expr();
+            if (lexer->nextToken != RPAREN) {
+                std::cout << "ERROR - Invalid factor.\n";
+                exit(-1);
+            }
+        }
+        else {
+            std::cout << "ERROR - Invalid factor.\n";
+        }
+    }
+    lexer->lex();
+}
+
+void Parser::relation() {
+    if (lexer->nextToken == GR || lexer->nextToken == GREQ || lexer->nextToken == LS || lexer->nextToken == LSEQ || lexer->nextToken == EQUAL || lexer->nextToken == NEQUAL) {
+        lexer->lex();
+        rel_operand();
+        relation();
+    }
+    lexer->lex();
+}
+
+void Parser::rel_operand() {
+    if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
+        std::cout << "Relational operand: " << lexer->lexeme << '\n';
+    }
+    lexer->lex();
 }

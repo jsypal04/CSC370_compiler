@@ -1,4 +1,2 @@
-int helloWorld
-int x
-x = 5 * (3 + 4)
-helloWorld = 12 + 3 * (x + 2)
+bool flag
+flag = [(3 > 5) & 3 < 2]

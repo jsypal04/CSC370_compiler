@@ -11,6 +11,7 @@ enum Token {
     BOOL_LIT,
     INT_KWD,
     FLOAT_KWD,
+    BOOL_KWD,
     NEWLINE,
     END,
     INT_LIT=100,
@@ -35,6 +36,8 @@ enum Token {
     RPAREN,
     LBRACE,
     RBRACE,
+    LBRACK,
+    RBRACK,
     INVALID_BRACKET,
     ERROR,
     NOP

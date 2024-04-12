@@ -50,6 +50,9 @@ Token Lexer::lookupToken(string lexeme) {
     else if (lexeme == "float") {
         return FLOAT_KWD;
     }
+    else if (lexeme == "bool") {
+        return BOOL_KWD;
+    }
     else {
         return ID;
     }
@@ -127,6 +130,12 @@ Token Lexer::lookupBracket(char bracket) {
         break;
     case '}':
         return RBRACE;
+        break;
+    case '[':
+        return LBRACK;
+        break;
+    case ']':
+        return RBRACK;
         break;
     default:
         cout << "ERROR - invalid bracket\n";
