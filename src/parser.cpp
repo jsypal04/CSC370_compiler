@@ -295,6 +295,7 @@ void Parser::bool_factor() {
                 std::cout << "ERROR - Invalid factor.\n";
                 exit(-1);
             }
+            lexer->lex();
         }
         else {
             std::cout << "ERROR - Invalid factor.\n";
@@ -318,7 +319,6 @@ void Parser::bool_factor() {
             std::cout << "Parsing bool_expr...\n";
             bool_expr();
             std::cout << "Parsed bool_expr.\n";
-            std::cout << lexer->lexeme << '\n';
             if (lexer->nextToken != RPAREN) {
                 std::cout << "ERROR - Invalid factor.\n";
                 exit(-1);
