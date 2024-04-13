@@ -2,12 +2,16 @@
 
 ProgStmtAST* Parser::prog() {
     // parse the first line of the program
+    std::cout << "Parsing stmt...\n";
     LineStmtAST* statement = stmt();
+    std::cout << "Parsed stmt.\n";
     // if the next token is a newline then parse the rest of the program
     if (lexer->nextToken == NEWLINE) {
         lexer->lex();
         // parses the rest of the program
+        std::cout << "Parsing prog...\n";
         ProgStmtAST* next_prog = prog();
+        std::cout << "Parsed prog.\n";
 
         // creates a pointer to a ProgStmtAST class and returns that pointer
         auto program = new ProgStmtAST(statement, next_prog);
@@ -21,15 +25,19 @@ ProgStmtAST* Parser::prog() {
 
 LineStmtAST* Parser::stmt() {
     // if the next token is a type keyword then parse a variable declaration
-    if (lexer->nextToken == INT_KWD || lexer->nextToken == FLOAT_KWD) {
+    if (lexer->nextToken == INT_KWD || lexer->nextToken == FLOAT_KWD || lexer->nextToken == BOOL_KWD) {
+        std::cout << "Parsing declaration...\n";
         DeclarationStmtAST* decl = declaration();
+        std::cout << "Parsed declaration.\n";
 
         auto statement = new LineStmtAST(decl, nullptr);
         return statement;
     }
     // if the next token is an identifier then parse an assignment
     else if (lexer->nextToken == ID) {
+        std::cout << "Parsing assignment...\n";
         AssignStmtAST* assign_ptr = assign();
+        std::cout << "Parsed assignment.\n";
 
         auto statement = new LineStmtAST(nullptr, assign_ptr);
         return statement;
@@ -48,6 +56,8 @@ DeclarationStmtAST* Parser::declaration() {
     lexer->lex();
     Token var_tok = lexer->nextToken;
     std::string var_lex = lexer->lexeme;
+
+    std::cout << "Type: " << type_lex << ", variable: " << var_lex << '\n'; 
 
     // check to make sure the nextToken is actually an identifier
     if (lexer->nextToken != ID) {
@@ -72,6 +82,7 @@ DeclarationStmtAST* Parser::declaration() {
 AssignStmtAST* Parser::assign() {
     // make an IDStmtAST for the variable on the lefthand side
     auto lefthand_side = new IDStmtAST(lexer->nextToken, lexer->lexeme);
+    std::cout << "LHS: " << lexer->lexeme << '\n';
 
     // check to make sure the next token is the assignment operator
     lexer->lex();
@@ -89,7 +100,16 @@ AssignStmtAST* Parser::assign() {
     }
     else if (lexer->nextToken == LBRACK) {
         lexer->lex();
+        std::cout << "Parsing bool_expr...\n";
         bool_expr();
+        if (lexer->nextToken != RBRACK) {
+            std::cout << "ERROR - Need to close boolean expression.\n";
+            std::cout << lexer->lexeme << '\n';
+            exit(-1);
+        }
+        lexer->lex();
+        std::cout << "Parsed bool_expr.\n";
+        return nullptr;
     }
     std::cout << "ERROR - invalid assignment." << '\n';
     exit(-1);
@@ -210,45 +230,67 @@ FactorStmtAST* Parser::factor() {
 ****************************************************/
 
 void Parser::bool_expr() {
+    std::cout << "Parsing bool_term...\n";
     bool_term();
-    bool_term_p();
+    std::cout << "Parsed bool_term.\n";
+    std::cout << "Parsing bool_expr_p...\n";
+    bool_expr_p();
+    std::cout << "Parsed bool_expr_p.\n";
 }
 
 void Parser::bool_expr_p() {
     if (lexer->nextToken == OR) {
         lexer->lex();
+        std::cout << "Parsing bool_term...\n";
         bool_term();
+        std::cout << "Parsed bool_term.\n";
+        std::cout << "Parsing bool_expr_p...\n";
         bool_expr_p();
+        std::cout << "Parsed bool_expr_p.\n";
     }
 }
 
 void Parser::bool_term() {
+    std::cout << "Parsing bool_factor...\n";
     bool_factor();
+    std::cout << "Parsed bool_factor.\n";
+    std::cout << "Parsing bool_term_p...\n";
     bool_term_p();
+    std::cout << "Parsed bool_term_p.\n";
 }
 
 void Parser::bool_term_p() {
     if (lexer->nextToken == AND) {
         lexer->lex();
+        std::cout << "Parsing bool_factor...\n";
         bool_factor();
+        std::cout << "Parsed bool_factor.\n";
+        std::cout << "Parsing bool_term_p...\n";
         bool_term_p();
+        std::cout << "Parsed bool_term_p.\n";
     }
-    lexer->lex();
 }
 
 void Parser::bool_factor() {
     if (lexer->nextToken == NOT) {
         lexer->lex();
         if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
+            std::cout << "Parsing rel_operand...\n";
             rel_operand();
+            std::cout << "Parsed rel_operand.\n";
+            std::cout << "Parsing relation...\n";
             relation();
+            std::cout << "Parsed relation.\n";
         }
         else if (lexer->nextToken == BOOL_LIT) {
             std::cout << "Boolean literal: " << lexer->lexeme << '\n';
+            lexer->lex();
         }
         else if (lexer->nextToken == LPAREN) {
             lexer->lex();
+            std::cout << "Parsing bool_expr...\n";
             bool_expr();
+            std::cout << "Parsed bool_expr.\n";
             if (lexer->nextToken != RPAREN) {
                 std::cout << "ERROR - Invalid factor.\n";
                 exit(-1);
@@ -260,39 +302,50 @@ void Parser::bool_factor() {
     }
     else {
         if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
+            std::cout << "Parsing rel_operand...\n";
             rel_operand();
+            std::cout << "Parsed rel_operand.\n";
+            std::cout << "Parsing relation...\n";
             relation();
+            std::cout << "Parsed relation.\n";
         }
         else if (lexer->nextToken == BOOL_LIT) {
             std::cout << "Boolean literal: " << lexer->lexeme << '\n';
+            lexer->lex();
         }
         else if (lexer->nextToken == LPAREN) {
             lexer->lex();
+            std::cout << "Parsing bool_expr...\n";
             bool_expr();
+            std::cout << "Parsed bool_expr.\n";
+            std::cout << lexer->lexeme << '\n';
             if (lexer->nextToken != RPAREN) {
                 std::cout << "ERROR - Invalid factor.\n";
                 exit(-1);
             }
+            lexer->lex();
         }
         else {
             std::cout << "ERROR - Invalid factor.\n";
         }
     }
-    lexer->lex();
 }
 
 void Parser::relation() {
     if (lexer->nextToken == GR || lexer->nextToken == GREQ || lexer->nextToken == LS || lexer->nextToken == LSEQ || lexer->nextToken == EQUAL || lexer->nextToken == NEQUAL) {
         lexer->lex();
+        std::cout << "Parsing rel_operand...\n";
         rel_operand();
+        std::cout << "Parsed rel_operand.\n";
+        std::cout << "Parsing relation...\n";
         relation();
+        std::cout << "Parsed relation.\n";
     }
-    lexer->lex();
 }
 
 void Parser::rel_operand() {
     if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
         std::cout << "Relational operand: " << lexer->lexeme << '\n';
+        lexer->lex();
     }
-    lexer->lex();
 }

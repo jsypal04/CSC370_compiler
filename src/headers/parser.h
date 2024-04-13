@@ -24,9 +24,9 @@ public:
     ProgStmtAST* parse() {
         lexer->nextChar = getc(lexer->file);
         lexer->lex();
-        //std::cout << "Parsing prog..." << '\n';
+        std::cout << "Parsing prog..." << '\n';
         ProgStmtAST* program = prog();
-        //std::cout << "Prog parsed." << '\n';
+        std::cout << "Prog parsed." << '\n';
 
         return program;
     }

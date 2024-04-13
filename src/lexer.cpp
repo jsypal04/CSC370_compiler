@@ -16,7 +16,7 @@ bool Lexer::isOpSymbol(char symbol) {
 }
 
 bool Lexer::isBracket(char symbol) {
-    return symbol == '(' || symbol == ')' || symbol == '{' || symbol == '}';
+    return symbol == '(' || symbol == ')' || symbol == '{' || symbol == '}' || symbol == '[' || symbol == ']';
 }
 
 void Lexer::skipSpace() {
