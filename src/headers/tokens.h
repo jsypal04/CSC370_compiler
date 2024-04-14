@@ -36,7 +36,8 @@ enum Token {
     LBRACE,
     RBRACE,
     INVALID_BRACKET,
-    ERROR
+    ERROR,
+    STRING // New token for strings
 };
 
 #endif
