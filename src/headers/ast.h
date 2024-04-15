@@ -22,12 +22,9 @@ class IDStmtAST;
 
 // class declarations for boolean expressions
 class BoolExpr;
-class BoolExpr_P;
 class BoolTerm;
-class BoolTerm_P;
 class BoolFactor;
 class Relation;
-class RelOperand;
 
 // base class for all statements
 class StmtAST {
@@ -151,27 +148,13 @@ public:
  * BEGIN CLASS DEFINITIONS FOR BOOLEAN EXPRESSIONS
 *************************************************/
 
-class RelOperand : public StmtAST {
-public:
-    IDStmtAST* operand;
-
-    RelOperand(IDStmtAST* opr) {
-        operand = opr;
-    }
-
-    ~RelOperand() {
-        delete operand;
-        operand = nullptr;
-    }
-};
-
 class Relation : public StmtAST {
 public:
     Token op;
-    RelOperand* operand;
+    IDStmtAST* operand;
     Relation* nextRelation;
 
-    Relation(Token o, RelOperand* opr, Relation* nextRel) {
+    Relation(Token o, IDStmtAST* opr, Relation* nextRel) {
         op = o;
         operand = opr;
         nextRelation = nextRel;
@@ -185,35 +168,49 @@ public:
     }
 };
 
-class BoolFactor : public StmtAST {
+class SuperRel : public StmtAST {
 public:
-    bool negated;
-    IDStmtAST* factor;
+    IDStmtAST* operand;
     Relation* relation;
 
-    BoolFactor(bool neg, IDStmtAST* fctr, Relation* rel) {
-        negated = neg;
-        factor = fctr;
+    SuperRel(IDStmtAST* opr, Relation* rel) {
+        operand = opr;
         relation = rel;
     }
 
+    ~SuperRel() {
+        delete operand;
+        operand = nullptr;
+        delete relation;
+        relation = nullptr;
+    }
+};
+
+class BoolFactor : public StmtAST {
+public:
+    bool negated;
+    StmtAST* obj;
+
+    BoolFactor(bool neg, StmtAST* stmt) {
+        negated = neg;
+        obj = stmt;
+    }
+
     ~BoolFactor() {
-        if (factor != nullptr) {
-            delete factor;
-            factor = nullptr;
-        }
-        if (relation != nullptr) {
-            delete relation;
-            relation = nullptr;
+        if (obj != nullptr) {
+            delete obj;
+            obj = nullptr;
         }
     }
 };
 
-class BoolTerm : StmtAST {
+
+// This class represents both the bool_term and bool_term_p nonterminals
+class BoolTerm : public StmtAST {
 public:
-    Token op; 
+    Token op;
     BoolFactor* factor;
-    BoolTerm* term;
+    BoolTerm* term; // nullptr is no more terms
 
     BoolTerm(Token o, BoolFactor* fctr, BoolTerm* trm) {
         op = o;
@@ -231,7 +228,27 @@ public:
     }
 };
 
-// to be continued
+// This class represents both the bool_expr and bool_expr_p nonterminals
+class BoolExpr : public StmtAST {
+public:
+    Token op;
+    BoolTerm* term;
+    BoolExpr* expr; // if no more expressions set to nullptr
+
+    BoolExpr(Token o, BoolTerm* trm, BoolExpr* expression) {
+        term = trm;
+        expr = expression;
+    }
+
+    ~BoolExpr() {
+        delete term;
+        term = nullptr;
+        if (expr != nullptr) {
+            delete expr;
+            expr = nullptr;
+        }
+    }
+};
 
 /*********************************************
  * BEGIN CLASS DEFINITIONS FOR TOP LEVEL NODES

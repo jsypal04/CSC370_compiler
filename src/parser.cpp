@@ -229,73 +229,98 @@ FactorStmtAST* Parser::factor() {
  * PARSE FUNCTION DEFINITIONS FOR BOOLEAN EXPRESSIONS
 ****************************************************/
 
-void Parser::bool_expr() {
+BoolExpr* Parser::bool_expr() {
     std::cout << "Parsing bool_term...\n";
-    bool_term();
+    BoolTerm* term = bool_term();
     std::cout << "Parsed bool_term.\n";
     std::cout << "Parsing bool_expr_p...\n";
-    bool_expr_p();
+    BoolExpr* expr_p = bool_expr_p();
     std::cout << "Parsed bool_expr_p.\n";
+
+    auto expr = new BoolExpr(NOP, term, expr_p);
+    return expr;
 }
 
-void Parser::bool_expr_p() {
+BoolExpr* Parser::bool_expr_p() {
     if (lexer->nextToken == OR) {
         lexer->lex();
         std::cout << "Parsing bool_term...\n";
-        bool_term();
+        BoolTerm* term = bool_term();
         std::cout << "Parsed bool_term.\n";
         std::cout << "Parsing bool_expr_p...\n";
-        bool_expr_p();
+        BoolExpr* next_expr_p = bool_expr_p();
         std::cout << "Parsed bool_expr_p.\n";
+
+        auto expr_p = new BoolExpr(OR, term, next_expr_p);
+        return expr_p;
     }
+
+    return nullptr;
 }
 
-void Parser::bool_term() {
+BoolTerm* Parser::bool_term() {
     std::cout << "Parsing bool_factor...\n";
-    bool_factor();
+    BoolFactor* factor = bool_factor();
     std::cout << "Parsed bool_factor.\n";
     std::cout << "Parsing bool_term_p...\n";
-    bool_term_p();
+    BoolTerm* term_p = bool_term_p();
     std::cout << "Parsed bool_term_p.\n";
+
+    auto term = new BoolTerm(NOP, factor, term_p);
+    return term;
 }
 
-void Parser::bool_term_p() {
+BoolTerm* Parser::bool_term_p() {
     if (lexer->nextToken == AND) {
         lexer->lex();
         std::cout << "Parsing bool_factor...\n";
-        bool_factor();
+        BoolFactor* factor = bool_factor();
         std::cout << "Parsed bool_factor.\n";
         std::cout << "Parsing bool_term_p...\n";
-        bool_term_p();
+        BoolTerm* next_term_p = bool_term_p();
         std::cout << "Parsed bool_term_p.\n";
+
+        auto term_p = new BoolTerm(AND, factor, next_term_p);
+        return term_p;
     }
+
+    return nullptr;
 }
 
-void Parser::bool_factor() {
+BoolFactor* Parser::bool_factor() {
     if (lexer->nextToken == NOT) {
         lexer->lex();
         if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
             std::cout << "Parsing rel_operand...\n";
-            rel_operand();
+            IDStmtAST* operand = rel_operand();
             std::cout << "Parsed rel_operand.\n";
             std::cout << "Parsing relation...\n";
-            relation();
+            Relation* rel = relation();
             std::cout << "Parsed relation.\n";
+
+            SuperRel* super = new SuperRel(operand, rel);
+            auto factor = new BoolFactor(true, super);
+            return factor;
         }
         else if (lexer->nextToken == BOOL_LIT) {
             std::cout << "Boolean literal: " << lexer->lexeme << '\n';
+            
+            IDStmtAST* literal = new IDStmtAST(lexer->nextToken, lexer->lexeme);
+            BoolFactor* factor = new BoolFactor(true, literal); 
             lexer->lex();
         }
         else if (lexer->nextToken == LPAREN) {
             lexer->lex();
             std::cout << "Parsing bool_expr...\n";
-            bool_expr();
+            BoolExpr* expr = bool_expr();
             std::cout << "Parsed bool_expr.\n";
             if (lexer->nextToken != RPAREN) {
                 std::cout << "ERROR - Invalid factor.\n";
                 exit(-1);
             }
             lexer->lex();
+
+            BoolFactor* factor = new BoolFactor(true, expr);
         }
         else {
             std::cout << "ERROR - Invalid factor.\n";
@@ -304,26 +329,35 @@ void Parser::bool_factor() {
     else {
         if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
             std::cout << "Parsing rel_operand...\n";
-            rel_operand();
+            IDStmtAST* operand = rel_operand();
             std::cout << "Parsed rel_operand.\n";
             std::cout << "Parsing relation...\n";
-            relation();
+            Relation* rel = relation();
             std::cout << "Parsed relation.\n";
+
+            SuperRel* super = new SuperRel(operand, rel);
+            auto factor = new BoolFactor(false, super);
+            return factor;
         }
         else if (lexer->nextToken == BOOL_LIT) {
             std::cout << "Boolean literal: " << lexer->lexeme << '\n';
+            
+            IDStmtAST* literal = new IDStmtAST(lexer->nextToken, lexer->lexeme);
+            BoolFactor* factor = new BoolFactor(true, literal); 
             lexer->lex();
         }
         else if (lexer->nextToken == LPAREN) {
             lexer->lex();
             std::cout << "Parsing bool_expr...\n";
-            bool_expr();
+            BoolExpr* expr = bool_expr();
             std::cout << "Parsed bool_expr.\n";
             if (lexer->nextToken != RPAREN) {
                 std::cout << "ERROR - Invalid factor.\n";
                 exit(-1);
             }
             lexer->lex();
+
+            BoolFactor* factor = new BoolFactor(false, expr);
         }
         else {
             std::cout << "ERROR - Invalid factor.\n";
@@ -331,21 +365,32 @@ void Parser::bool_factor() {
     }
 }
 
-void Parser::relation() {
+Relation* Parser::relation() {
     if (lexer->nextToken == GR || lexer->nextToken == GREQ || lexer->nextToken == LS || lexer->nextToken == LSEQ || lexer->nextToken == EQUAL || lexer->nextToken == NEQUAL) {
         lexer->lex();
         std::cout << "Parsing rel_operand...\n";
-        rel_operand();
+        IDStmtAST* operand = rel_operand();
         std::cout << "Parsed rel_operand.\n";
         std::cout << "Parsing relation...\n";
-        relation();
+        Relation* rel = relation();
         std::cout << "Parsed relation.\n";
+
+        Relation* next_rel = new Relation(lexer->nextToken, operand, rel);
+        return next_rel;
     }
+
+    return nullptr;
 }
 
-void Parser::rel_operand() {
+IDStmtAST* Parser::rel_operand() {
     if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
         std::cout << "Relational operand: " << lexer->lexeme << '\n';
+        IDStmtAST* operand = new IDStmtAST(lexer->nextToken, lexer->lexeme);
+        
         lexer->lex();
+        return operand;
     }
+
+    std::cout << "Error - Invalid operand.\n";
+    exit(-1);
 }

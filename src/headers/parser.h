@@ -69,25 +69,25 @@ public:
     *****************************************/
 
     // Parses the boo_expr node
-    void bool_expr();
+    BoolExpr* bool_expr();
 
     // Parses the bool_expr_p node
-    void bool_expr_p();
+    BoolExpr* bool_expr_p();
 
     // Parses the bool_term node
-    void bool_term();
+    BoolTerm* bool_term();
 
     // Parses the bool_term_p node
-    void bool_term_p();
+    BoolTerm* bool_term_p();
 
     // Parses the bool_factor node
-    void bool_factor();
+    BoolFactor* bool_factor();
 
     // Parses the relation node
-    void relation();
+    Relation* relation();
 
     // Parses the rel_operand node
-    void rel_operand();
+    IDStmtAST* rel_operand();
 };
 
 #endif
