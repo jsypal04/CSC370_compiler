@@ -192,10 +192,18 @@ public:
     char stmt_class;
     StmtAST* obj;
 
+    /* Constructor for the BoolFactor class
+    
+        * bool neg: indicates whether this factor is negated in execution
+        * char stmtClass: indicates the derived type of stmt (l for literal, s for SuperRel, e for BoolExpr)
+        * StmtAST* stmt: the generic StmtAST class that is the child of BoolFactor
+    */
     BoolFactor(bool neg, char stmtClass, StmtAST* stmt) {
         negated = neg;
         stmt_class = stmtClass;
         obj = stmt;
+
+        std::cout << stmtClass << ", " << stmt_class << '\n';
     }
 
     ~BoolFactor() {
@@ -260,11 +268,13 @@ public:
 class AssignStmtAST : public StmtAST {
 public:
     IDStmtAST* varID;
-    ExprStmtAST* RHS;
+    StmtAST* RHS;
+    char RHS_type;
 
-    AssignStmtAST(IDStmtAST* name, ExprStmtAST* rhs) {
+    AssignStmtAST(IDStmtAST* name, StmtAST* rhs, char rhs_type) {
         varID = name;
         RHS = rhs;
+        RHS_type = rhs_type;
     }
 
     ~AssignStmtAST() {

@@ -32,7 +32,7 @@ public:
     ******************************************************************/
 
     // Traverses the expression node
-    Token traverse_expr(ExprStmtAST* expr); // returns the type of the expression
+    Token traverse_expr(const ExprStmtAST* expr); // returns the type of the expression
 
     // Traverses the expression prime node
     Token traverse_expr_p(Expr_PStmtAST* expr_p);
@@ -51,7 +51,7 @@ public:
     ***************************************************************/
 
     // Traverses the bool_expr node
-    Token traverse_bool_expr(BoolExpr* expr);
+    Token traverse_bool_expr(const BoolExpr* expr);
 
     // Traverses the bool_term node
     Token traverse_bool_term(BoolTerm* term);

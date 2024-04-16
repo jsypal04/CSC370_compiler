@@ -95,13 +95,13 @@ AssignStmtAST* Parser::assign() {
     if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT || lexer->nextToken == LPAREN) {
         // parse the expression, add it to the assignment node and return the assignment node
         ExprStmtAST* righthand_side = expr();
-        auto assignment = new AssignStmtAST(lefthand_side, righthand_side);
+        auto assignment = new AssignStmtAST(lefthand_side, righthand_side, 'a');
         return assignment;
     }
     else if (lexer->nextToken == LBRACK) {
         lexer->lex();
         std::cout << "Parsing bool_expr...\n";
-        bool_expr();
+        BoolExpr* boolean_expr = bool_expr();
         if (lexer->nextToken != RBRACK) {
             std::cout << "ERROR - Need to close boolean expression.\n";
             std::cout << lexer->lexeme << '\n';
@@ -109,7 +109,9 @@ AssignStmtAST* Parser::assign() {
         }
         lexer->lex();
         std::cout << "Parsed bool_expr.\n";
-        return nullptr;
+
+        auto assignment = new AssignStmtAST(lefthand_side, boolean_expr, 'b');
+        return assignment;
     }
     std::cout << "ERROR - invalid assignment." << '\n';
     exit(-1);

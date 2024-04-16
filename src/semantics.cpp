@@ -34,18 +34,34 @@ void Semantics::traverse_assign(AssignStmtAST* assign) {
         exit(-1);
     }
 
-    Token type = traverse_expr(assign->RHS);
-    if (variables[var] != type) {
-        std::cout << "ERROR - Incompatible type for variable '" << var << "'.\n";
-        exit(-1);
+    switch (assign->RHS_type) {
+        case 'a': {
+            const ExprStmtAST* righthand_side = dynamic_cast<const ExprStmtAST*>(assign->RHS);
+            Token type = traverse_expr(righthand_side);
+            if (variables[var] != type) {
+                std::cout << "ERROR - Incompatible type for variable '" << var << "'.\n";
+                exit(-1);
+            }
+        }
+
+        case 'b': {
+            const BoolExpr* righthand_side = dynamic_cast<const BoolExpr*>(assign->RHS);
+            Token type = traverse_bool_expr(righthand_side);
+            if (variables[var] != type) {
+                std::cout << "ERROR - Incompatible type for variable '" << var << "'.\n";
+                exit(-1);
+            }
+        }
     }
+    std::cout << "ERROR - Right hand side not recognized for variable '" << var << "' definition.\n";
+    exit(-1);
 }
 
 /******************************************************************
  * FUNCTION DEFINITIONS FOR ARITHMETIC EXPRESSION SEMANTIC ANALYSIS
 ******************************************************************/
 
-Token Semantics::traverse_expr(ExprStmtAST* expr) {
+Token Semantics::traverse_expr(const ExprStmtAST* expr) {
     Token type1 = traverse_term(expr->term);
     if (expr->expr_p == nullptr) {
         return type1;
@@ -128,7 +144,7 @@ Token Semantics::traverse_factor(FactorStmtAST* factor) {
  * FUNCTION DEFINITIONS FOR BOOLEAN EXPRESSION SEMANTIC ANALYSIS
 ***************************************************************/
 
-Token Semantics::traverse_bool_expr(BoolExpr* expr) {
+Token Semantics::traverse_bool_expr(const BoolExpr* expr) {
     Token type1 = traverse_bool_term(expr->term);
     if (expr->expr == nullptr) {
         return type1;
@@ -155,23 +171,24 @@ Token Semantics::traverse_bool_term(BoolTerm* term) {
 }
 
 Token Semantics::traverse_bool_factor(BoolFactor* factor) {
+    std::cout << "Factor type: " << factor->stmt_class << '\n';
     switch (factor->stmt_class) {
-        case 's': 
+        case 's': {
             const SuperRel* super_rel = dynamic_cast<const SuperRel*>(factor->obj);
             return traverse_super_rel(super_rel);
+        }
 
-        case 'l':
-           return BOOL_KWD; 
+        case 'l': {
+            return BOOL_KWD;
+        }
 
-        case 'e':
+        case 'e': {
             const BoolExpr* expr = dynamic_cast<const BoolExpr*>(factor->obj);
-            // need to figure out how to pass this const BoolExpr* into traverse_bool_expr();
-            break;
-
-        default:
-            std::cout << "ERROR - Boolean factor not recognized.\n";
-            exit(-1);
-    }    
+            return traverse_bool_expr(expr);
+        }
+    }
+    std::cout << "ERROR - Boolean factor not recognized.\n";
+    exit(-1);    
 }
 
 Token Semantics::traverse_super_rel(const SuperRel* super_rel) {

@@ -16,7 +16,8 @@ void TACGenerator::traverse_stmt(LineStmtAST* stmt) {
 }
 
 void TACGenerator::traverse_assign(AssignStmtAST* assign) {
-    std::string exprVar = traverse_expr(assign->RHS);
+    ExprStmtAST* righthand_side = dynamic_cast<ExprStmtAST*>(assign->RHS);
+    std::string exprVar = traverse_expr(righthand_side);
     *output << assign->varID->lexeme << '=' << exprVar << '\n';
 }
 
