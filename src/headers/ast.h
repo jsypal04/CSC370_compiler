@@ -189,10 +189,12 @@ public:
 class BoolFactor : public StmtAST {
 public:
     bool negated;
+    char stmt_class;
     StmtAST* obj;
 
-    BoolFactor(bool neg, StmtAST* stmt) {
+    BoolFactor(bool neg, char stmtClass, StmtAST* stmt) {
         negated = neg;
+        stmt_class = stmtClass;
         obj = stmt;
     }
 

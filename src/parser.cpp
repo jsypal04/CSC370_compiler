@@ -299,14 +299,14 @@ BoolFactor* Parser::bool_factor() {
             std::cout << "Parsed relation.\n";
 
             SuperRel* super = new SuperRel(operand, rel);
-            auto factor = new BoolFactor(true, super);
+            auto factor = new BoolFactor(true, 's', super);
             return factor;
         }
         else if (lexer->nextToken == BOOL_LIT) {
             std::cout << "Boolean literal: " << lexer->lexeme << '\n';
             
             IDStmtAST* literal = new IDStmtAST(lexer->nextToken, lexer->lexeme);
-            BoolFactor* factor = new BoolFactor(true, literal); 
+            BoolFactor* factor = new BoolFactor(true, 'l', literal); 
             lexer->lex();
         }
         else if (lexer->nextToken == LPAREN) {
@@ -320,7 +320,7 @@ BoolFactor* Parser::bool_factor() {
             }
             lexer->lex();
 
-            BoolFactor* factor = new BoolFactor(true, expr);
+            BoolFactor* factor = new BoolFactor(true, 'e', expr);
         }
         else {
             std::cout << "ERROR - Invalid factor.\n";
@@ -336,14 +336,14 @@ BoolFactor* Parser::bool_factor() {
             std::cout << "Parsed relation.\n";
 
             SuperRel* super = new SuperRel(operand, rel);
-            auto factor = new BoolFactor(false, super);
+            auto factor = new BoolFactor(false, 's', super);
             return factor;
         }
         else if (lexer->nextToken == BOOL_LIT) {
             std::cout << "Boolean literal: " << lexer->lexeme << '\n';
             
             IDStmtAST* literal = new IDStmtAST(lexer->nextToken, lexer->lexeme);
-            BoolFactor* factor = new BoolFactor(true, literal); 
+            BoolFactor* factor = new BoolFactor(true, 'l', literal); 
             lexer->lex();
         }
         else if (lexer->nextToken == LPAREN) {
@@ -357,7 +357,7 @@ BoolFactor* Parser::bool_factor() {
             }
             lexer->lex();
 
-            BoolFactor* factor = new BoolFactor(false, expr);
+            BoolFactor* factor = new BoolFactor(false, 'e', expr);
         }
         else {
             std::cout << "ERROR - Invalid factor.\n";

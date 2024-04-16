@@ -27,6 +27,10 @@ public:
     // Traverses the assignment node
     void traverse_assign(AssignStmtAST* assign);
 
+    /******************************************************************
+     * FUNCTION DEFINITIONS FOR ARITHMETIC EXPRESSION SEMANTIC ANALYSIS
+    ******************************************************************/
+
     // Traverses the expression node
     Token traverse_expr(ExprStmtAST* expr); // returns the type of the expression
 
@@ -42,6 +46,27 @@ public:
     // Traverses the factor node
     Token traverse_factor(FactorStmtAST* factor);
 
+    /***************************************************************
+     * FUNCTION DEFINITIONS FOR BOOLEAN EXPRESSION SEMANTIC ANALYSIS
+    ***************************************************************/
+
+    // Traverses the bool_expr node
+    Token traverse_bool_expr(BoolExpr* expr);
+
+    // Traverses the bool_term node
+    Token traverse_bool_term(BoolTerm* term);
+
+    // Traverses the bool_factor node
+    Token traverse_bool_factor(BoolFactor* factor);
+
+    // Traverses the super_rel node
+    Token traverse_super_rel(const SuperRel* super_rel);
+
+    // Traverses the relation node
+    Token traverse_relation(Relation* rel);
+
+    // Traverses the rel_operand node
+    Token traverse_rel_operand(IDStmtAST* operand);
 };
 
 #endif

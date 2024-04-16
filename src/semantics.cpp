@@ -1,6 +1,10 @@
 #include <iostream>
 #include "headers/semantics.h"
 
+/*******************************************************
+ * FUNCTION DEFINITIONS FOR HIGH LEVEL SEMANTIC ANALYSIS
+*******************************************************/
+
 void Semantics::traverse_prog(ProgStmtAST* prog) {
     traverse_stmt(prog->stmt);
     if (prog->prog != nullptr) {
@@ -36,6 +40,10 @@ void Semantics::traverse_assign(AssignStmtAST* assign) {
         exit(-1);
     }
 }
+
+/******************************************************************
+ * FUNCTION DEFINITIONS FOR ARITHMETIC EXPRESSION SEMANTIC ANALYSIS
+******************************************************************/
 
 Token Semantics::traverse_expr(ExprStmtAST* expr) {
     Token type1 = traverse_term(expr->term);
@@ -116,3 +124,91 @@ Token Semantics::traverse_factor(FactorStmtAST* factor) {
     exit(-1);
 }
 
+/***************************************************************
+ * FUNCTION DEFINITIONS FOR BOOLEAN EXPRESSION SEMANTIC ANALYSIS
+***************************************************************/
+
+Token Semantics::traverse_bool_expr(BoolExpr* expr) {
+    Token type1 = traverse_bool_term(expr->term);
+    if (expr->expr == nullptr) {
+        return type1;
+    }
+    Token type2 = traverse_bool_expr(expr->expr);
+    if (type1 != type2) {
+        std::cout << "ERROR - Incompatable type for '|' operation.\n";
+        exit(-1);
+    }
+    return type1;
+}
+
+Token Semantics::traverse_bool_term(BoolTerm* term) {
+    Token type1 = traverse_bool_factor(term->factor);
+    if (term->term == nullptr) {
+        return type1;
+    }
+    Token type2 = traverse_bool_term(term->term);
+    if (type1 != type2) {
+        std::cout << "ERROR - Incompatible types for '&' operatioin.\n";
+        exit(-1);
+    }
+    return type1;
+}
+
+Token Semantics::traverse_bool_factor(BoolFactor* factor) {
+    switch (factor->stmt_class) {
+        case 's': 
+            const SuperRel* super_rel = dynamic_cast<const SuperRel*>(factor->obj);
+            return traverse_super_rel(super_rel);
+
+        case 'l':
+           return BOOL_KWD; 
+
+        case 'e':
+            const BoolExpr* expr = dynamic_cast<const BoolExpr*>(factor->obj);
+            // need to figure out how to pass this const BoolExpr* into traverse_bool_expr();
+            break;
+
+        default:
+            std::cout << "ERROR - Boolean factor not recognized.\n";
+            exit(-1);
+    }    
+}
+
+Token Semantics::traverse_super_rel(const SuperRel* super_rel) {
+    Token type1 = traverse_rel_operand(super_rel->operand);
+    if (super_rel->relation == nullptr) {
+        return type1;
+    }
+    Token type2 = traverse_relation(super_rel->relation);
+    if (type1 != type2) {
+        std::cout << "ERROR - Invalid types for relation operation.\n";
+        exit(-1);
+    }
+    return type1;
+} 
+
+Token Semantics::traverse_relation(Relation* rel) {
+    Token type1 = traverse_rel_operand(rel->operand);
+    if (rel->nextRelation == nullptr) {
+        return type1;
+    }
+    Token type2 = traverse_relation(rel->nextRelation);
+    if (type1 != type2) {
+        std::cout << "ERROR - Invalid types for relation operation.\n";
+        exit(-1);
+    }
+    return type1;
+}
+
+Token Semantics::traverse_rel_operand(IDStmtAST* operand) {
+    switch (operand->token)
+    {
+        case INT_LIT: return INT_KWD;    
+
+        case FLOAT_LIT: return FLOAT_KWD; 
+        
+        default:
+            std::cout << "ERROR - Invalid type for relation operand.\n";
+            exit(-1);
+    }
+}
