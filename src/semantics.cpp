@@ -42,6 +42,7 @@ void Semantics::traverse_assign(AssignStmtAST* assign) {
                 std::cout << "ERROR - Incompatible type for variable '" << var << "'.\n";
                 exit(-1);
             }
+	    return;
         }
 
         case 'b': {
@@ -51,6 +52,7 @@ void Semantics::traverse_assign(AssignStmtAST* assign) {
                 std::cout << "ERROR - Incompatible type for variable '" << var << "'.\n";
                 exit(-1);
             }
+	    return;
         }
     }
     std::cout << "ERROR - Right hand side not recognized for variable '" << var << "' definition.\n";
