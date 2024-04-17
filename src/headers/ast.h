@@ -11,6 +11,7 @@ class ProgStmtAST;
 class LineStmtAST;
 class DeclarationStmtAST;
 class AssignStmtAST;
+class IfStmtAST;
 
 // class declarations for arithmetic expressions
 class ExprStmtAST;
@@ -262,6 +263,25 @@ public:
  * BEGIN CLASS DEFINITIONS FOR TOP LEVEL NODES
 *********************************************/
 
+// class for if statment nodes
+class IfStmtAST : public StmtAST {
+public:
+    BoolExpr* condition;
+    ProgStmtAST* code;
+
+    IfStmtAST(BoolExpr* bool_expr, ProgStmtAST* program) {
+        condition = bool_expr;
+	code = program;
+    }
+
+    ~IfStmtAST() {
+        delete condition;
+	condition = nullptr;
+	delete code;
+	code = nullptr;
+    }
+};
+
 // class for assignment nodes
 class AssignStmtAST : public StmtAST {
 public:
@@ -295,10 +315,10 @@ public:
     }
 
     ~DeclarationStmtAST() {
-        delete type;
+	delete type;
+	type = nullptr;
         delete variable;
-        type = nullptr;
-        variable = nullptr;
+	variable = nullptr;
     }
 };
 
@@ -307,17 +327,27 @@ class LineStmtAST : public StmtAST {
 public:
     DeclarationStmtAST* declaration;
     AssignStmtAST* assign;
+    IfStmtAST* conditional;
 
-    LineStmtAST(DeclarationStmtAST* decl_ptr, AssignStmtAST* assign_ptr) {
+    LineStmtAST(DeclarationStmtAST* decl_ptr, AssignStmtAST* assign_ptr, IfStmtAST* ifstmt) {
         declaration = decl_ptr;
         assign = assign_ptr;
+	conditional = ifstmt;
     }
 
     ~LineStmtAST() {
-        delete declaration;
-        delete assign;
-        declaration = nullptr;
-        assign = nullptr;
+        if (declaration != nullptr) {
+	    delete declaration;
+	    declaration = nullptr;
+	}
+	if (assign != nullptr) {
+	    delete assign;
+	    assign = nullptr;
+	}
+	if (conditional != nullptr) {
+	    delete conditional;
+	    conditional = nullptr;
+	}
     }
 };
 

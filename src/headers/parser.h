@@ -45,6 +45,9 @@ public:
     // Parses the assignment node
     AssignStmtAST* assign();
 
+    // Parses the if statement node
+    IfStmtAST* if_stmt();
+
     /********************************************
      * PARSE FUNCTIONS FOR ARITHMETIC EXPRESSIONS
     ********************************************/

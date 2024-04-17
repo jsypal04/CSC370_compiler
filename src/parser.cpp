@@ -30,7 +30,7 @@ LineStmtAST* Parser::stmt() {
         DeclarationStmtAST* decl = declaration();
         std::cout << "Parsed declaration.\n";
 
-        auto statement = new LineStmtAST(decl, nullptr);
+        auto statement = new LineStmtAST(decl, nullptr, nullptr);
         return statement;
     }
     // if the next token is an identifier then parse an assignment
@@ -39,8 +39,17 @@ LineStmtAST* Parser::stmt() {
         AssignStmtAST* assign_ptr = assign();
         std::cout << "Parsed assignment.\n";
 
-        auto statement = new LineStmtAST(nullptr, assign_ptr);
+        auto statement = new LineStmtAST(nullptr, assign_ptr, nullptr);
         return statement;
+    }
+    // if the next token is the IF keyword, parse an if stmt
+    else if (lexer->nextToken == IF) {
+        std::cout << "Parsing if stmt...\n";
+	IfStmtAST* conditional = if_stmt();		
+	std::cout << "Parsed if stmt.\n";
+
+	auto statement = new LineStmtAST(nullptr, nullptr, conditional);
+	return statement;
     }
     // otherwise this is an undefined statement
     std::cout << "ERROR - invalid statement." << '\n';
@@ -115,6 +124,52 @@ AssignStmtAST* Parser::assign() {
     }
     std::cout << "ERROR - invalid assignment." << '\n';
     exit(-1);
+}
+
+IfStmtAST* Parser::if_stmt() {
+    lexer->lex();
+    if (lexer->nextToken != LBRACK) {
+        std::cout << "ERROR - Invalid syntax for writing an if statement condition. Requires brackets.\n";
+	exit(-1);
+    }
+    lexer->lex();
+    std::cout << "Parsing bool expr...\n";
+    BoolExpr* condition = bool_expr();
+    std::cout << "Parsed bool expr.\n";
+    if (lexer->nextToken != RBRACK) {
+	std::cout << "ERROR - Missing closing bracket in if statement conditional.\n";
+	exit(-1);
+    }
+    lexer->lex();
+    if (lexer->nextToken != LBRACE) {
+	std::cout << "ERROR - Missing opening brace in if statement.\n";
+	exit(-1);
+    }
+    lexer->lex();
+    if (lexer->nextToken == NEWLINE) {
+	lexer->lex();
+	std::cout << "Parsing prog...\n";
+	ProgStmtAST* code = prog();
+	std::cout << "Parsed prog.\n";
+	if (lexer->nextToken != RBRACE) {
+	    std::cout << "Token: " << lexer->nextToken << '\n';
+	    std::cout << "ERROR - Missing closing brace in if statement.\n";
+	    exit(-1);
+	}
+        auto conditional = new IfStmtAST(condition, code);
+	return conditional;
+    }
+    lexer->lex();
+    std::cout << "Parsing prog...\n";
+    ProgStmtAST* code = prog();
+    std::cout << "Parsed prog.\n";
+    if (lexer->nextToken != RBRACE) {
+        std::cout << "Token: " << lexer->nextToken << '\n';
+        std::cout << "ERROR - Missing closing brace in if statement.\n";
+        exit(-1);
+    }
+    auto conditional = new IfStmtAST(condition, code);
+    return conditional;
 }
 
 /*******************************************************
