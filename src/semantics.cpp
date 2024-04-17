@@ -171,7 +171,6 @@ Token Semantics::traverse_bool_term(BoolTerm* term) {
 }
 
 Token Semantics::traverse_bool_factor(BoolFactor* factor) {
-    std::cout << "Factor type: " << factor->stmt_class << '\n';
     switch (factor->stmt_class) {
         case 's': {
             const SuperRel* super_rel = dynamic_cast<const SuperRel*>(factor->obj);
@@ -194,14 +193,14 @@ Token Semantics::traverse_bool_factor(BoolFactor* factor) {
 Token Semantics::traverse_super_rel(const SuperRel* super_rel) {
     Token type1 = traverse_rel_operand(super_rel->operand);
     if (super_rel->relation == nullptr) {
-        return type1;
+        return BOOL_KWD;
     }
     Token type2 = traverse_relation(super_rel->relation);
     if (type1 != type2) {
         std::cout << "ERROR - Invalid types for relation operation.\n";
         exit(-1);
     }
-    return type1;
+    return BOOL_KWD;
 } 
 
 Token Semantics::traverse_relation(Relation* rel) {

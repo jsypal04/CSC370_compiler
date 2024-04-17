@@ -308,8 +308,9 @@ BoolFactor* Parser::bool_factor() {
             std::cout << "Boolean literal: " << lexer->lexeme << '\n';
             
             IDStmtAST* literal = new IDStmtAST(lexer->nextToken, lexer->lexeme);
-            BoolFactor* factor = new BoolFactor(true, 'l', literal); 
+            BoolFactor* factor = new BoolFactor(true, 'l', literal);
             lexer->lex();
+	    return factor;
         }
         else if (lexer->nextToken == LPAREN) {
             lexer->lex();
@@ -323,10 +324,12 @@ BoolFactor* Parser::bool_factor() {
             lexer->lex();
 
             BoolFactor* factor = new BoolFactor(true, 'e', expr);
-        }
+            return factor;
+	}
         else {
             std::cout << "ERROR - Invalid factor.\n";
-        }
+            exit(-1);
+	}
     }
     else {
         if (lexer->nextToken == ID || lexer->nextToken == INT_LIT || lexer->nextToken == FLOAT_LIT) {
@@ -347,7 +350,8 @@ BoolFactor* Parser::bool_factor() {
             IDStmtAST* literal = new IDStmtAST(lexer->nextToken, lexer->lexeme);
             BoolFactor* factor = new BoolFactor(true, 'l', literal); 
             lexer->lex();
-        }
+            return factor;
+	}
         else if (lexer->nextToken == LPAREN) {
             lexer->lex();
             std::cout << "Parsing bool_expr...\n";
@@ -360,10 +364,12 @@ BoolFactor* Parser::bool_factor() {
             lexer->lex();
 
             BoolFactor* factor = new BoolFactor(false, 'e', expr);
-        }
+            return factor;
+	}
         else {
             std::cout << "ERROR - Invalid factor.\n";
-        }
+            exit(-1);
+	}
     }
 }
 

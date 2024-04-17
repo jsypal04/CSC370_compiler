@@ -202,8 +202,6 @@ public:
         negated = neg;
         stmt_class = stmtClass;
         obj = stmt;
-
-        std::cout << stmtClass << ", " << stmt_class << '\n';
     }
 
     ~BoolFactor() {
