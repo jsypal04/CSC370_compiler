@@ -51,6 +51,9 @@ LineStmtAST* Parser::stmt() {
 	auto statement = new LineStmtAST(nullptr, nullptr, conditional);
 	return statement;
     }
+    else if (lexer->nextToken == RBRACE) {
+        return nullptr;
+    }
     // otherwise this is an undefined statement
     std::cout << "ERROR - invalid statement." << '\n';
     exit(-1);
