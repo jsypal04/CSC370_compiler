@@ -9,6 +9,7 @@ class TACGenerator {
 private:
     std::ofstream* output;
     int tempCount = 0;
+    int labelCount = 0;
 
 public:
     TACGenerator(const char* path) {
@@ -27,12 +28,22 @@ public:
         delete output;
     }
 
+    /*****************************************
+     * FUNCTIONS FOR HIGH LEVEL TAC GENERATION 
+    *****************************************/
+
     void traverse_prog(ProgStmtAST* prog);
 
     void traverse_stmt(LineStmtAST* stmt);
 
     void traverse_assign(AssignStmtAST* assign);
 
+    void traverse_if_stmt(IfStmtAST* conditional);
+
+    /*****************************************
+     * FUNCTIONS FOR ARITHMETIC TAC GENERATION
+    *****************************************/
+    
     std::string traverse_expr(ExprStmtAST* expr);
 
     std::string traverse_expr_p(Expr_PStmtAST* expr_p);
@@ -42,6 +53,22 @@ public:
     std::string traverse_term_p(Term_PStmtAST* term_p);
 
     std::string traverse_factor(FactorStmtAST* factor);
+
+    /*************************************************
+     * FUNCTIONS FOR BOOLEAN EXPRESSION TAC GENERATION
+    *************************************************/
+
+    std::string traverse_bool_expr(BoolExpr* bool_expr);
+
+    std::string traverse_bool_expr_p(BoolExpr* bool_expr_p);
+
+    std::string traverse_bool_term(BoolTerm* bool_term);
+
+    std::string traverse_bool_term_p(BoolTerm* bool_term_p);
+
+    std::string traverse_bool_factor(BoolFactor* bool_factor);
+
+    std::string traverse_relation(Relation* rel);
 };
 
 #endif

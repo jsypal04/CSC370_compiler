@@ -59,6 +59,15 @@ void Semantics::traverse_assign(AssignStmtAST* assign) {
     exit(-1);
 }
 
+void Semantics::traverse_if_stmt(IfStmtAST* conditional) {
+    Token type = traverse_bool_expr(conditional->condition);
+    if (type != BOOL_KWD) {
+        std::cout << "ERROR - If statement conditions must be boolean type.\n";
+        exit(-1);
+    }
+    traverse_prog(conditional->code);
+}
+
 /******************************************************************
  * FUNCTION DEFINITIONS FOR ARITHMETIC EXPRESSION SEMANTIC ANALYSIS
 ******************************************************************/

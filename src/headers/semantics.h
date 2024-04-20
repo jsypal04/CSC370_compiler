@@ -27,6 +27,9 @@ public:
     // Traverses the assignment node
     void traverse_assign(AssignStmtAST* assign);
 
+    // Traverses the if stmt node
+    void traverse_if_stmt(IfStmtAST* conditional); 
+
     /******************************************************************
      * FUNCTION DEFINITIONS FOR ARITHMETIC EXPRESSION SEMANTIC ANALYSIS
     ******************************************************************/
