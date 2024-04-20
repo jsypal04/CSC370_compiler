@@ -207,7 +207,7 @@ std::string TACGenerator::traverse_bool_factor(BoolFactor* bool_factor) {
 
         case 's': {
             SuperRel* super_rel = dynamic_cast<SuperRel*>(bool_factor->obj);
-            std::string var1 = traverse_rel_operand(super_rel->operand);
+            std::string var1 = super_rel->operand->lexeme;
             if (super_rel->relation == nullptr) {
                 return var1;
             }
