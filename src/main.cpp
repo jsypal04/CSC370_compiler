@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
     
     Parser* parser = new Parser(path);
     Semantics semantic_analyzer;
-    //TACGenerator gen("a.tac");
+    TACGenerator gen("a.tac");
 
     if (parser->lexer->fileNotFound) {
         std::cout << "File \"" << path << "\" not found.\n";
@@ -24,8 +24,11 @@ int main(int argc, char* argv[]) {
     std::cout << "BEGIN SEMANTIC ANALYSIS\n\n";
     semantic_analyzer.traverse_prog(program);
     std::cout << "END SEMANTIC ANALYSIS\n\n";
-    //gen.traverse_prog(program);
-    //gen.destroyStream();
+
+    std::cout << "BEGIN TAC GENERATION\n\n";
+    gen.traverse_prog(program);
+    std::cout << "END TAC GENERATION\n\n";
+    gen.destroyStream();
 
     delete program;
     program = nullptr;

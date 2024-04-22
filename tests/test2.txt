@@ -1,2 +1,4 @@
-bool flag
-flag = [true | false]
+int x
+int y
+y = 3 + 5
+x = (5 - y) * (5 + y) - 25

@@ -17,6 +17,9 @@ void TACGenerator::traverse_stmt(LineStmtAST* stmt) {
     if (stmt->assign != nullptr) {
         traverse_assign(stmt->assign);
     }
+    else if (stmt->conditional != nullptr) {
+        traverse_if_stmt(stmt->conditional);
+    }
 }
 
 void TACGenerator::traverse_assign(AssignStmtAST* assign) {
@@ -26,6 +29,7 @@ void TACGenerator::traverse_assign(AssignStmtAST* assign) {
 }
 
 void TACGenerator::traverse_if_stmt(IfStmtAST* conditional) {
+    std::cout << "Running TACGenerator::traverse_if_stmt.\n";
     std::string condition = traverse_bool_expr(conditional->condition);
     std::string label = "L" + std::to_string(labelCount);
     labelCount++;
@@ -166,8 +170,9 @@ std::string TACGenerator::traverse_bool_expr_p(BoolExpr* bool_expr_p) {
 
 std::string TACGenerator::traverse_bool_term(BoolTerm* bool_term) {
     std::string var1 = traverse_bool_factor(bool_term->factor);
+    std::cout << (bool_term->term == nullptr) << '\n';
     if (bool_term->term == nullptr) {
-        std::cout << "ERROR - While generating code in bool_term. Missing bool_term_p node.\n";
+        std::cout << "ERROR - While generating TAC in bool_term. Missing bool_term_p node.\n";
         exit(-1);
     }
     std::string var2 = traverse_bool_term_p(bool_term->term);
@@ -247,7 +252,7 @@ std::string TACGenerator::traverse_relation(Relation* rel) {
             case NEQUAL: return "!=" + var1;
 
             default:
-                std::cout << "ERROR - Relational operator not recognized.\n";
+                std::cout << "ERROR - Relational operator '" << rel->op << "' not recognized.\n";
                 exit(-1);
         }
     }
